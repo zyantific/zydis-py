@@ -131,12 +131,56 @@ class AddressWidth(IntEnum):
 
 
 @cython.freelist(16)
+cdef class Operand:
+    cdef DecodedInstruction instr
+    cdef int index
+
+    def __cinit__(self, instr, index):
+        self.instr = instr
+        self.index = index
+
+    def __str__(self):
+        return STATIC_FORMATTER.format_operand(self)
+
+
+@cython.freelist(16)
 cdef class DecodedInstruction:
     cdef ZydisDecodedInstruction instr
 
     @property
+    def mnemonic(self):
+        return self.instr.mnemonic
+
+    @property
     def length(self):
         return self.instr.length
+
+    @property
+    def opcode(self):
+        return self.instr.opcode
+
+    @property
+    def stack_width(self):
+        return self.instr.stack_width
+
+    @property
+    def operand_width(self):
+        return self.instr.stack_width
+
+    @property
+    def address_width(self):
+        return self.instr.address_width
+
+    @property
+    def attributes(self):
+        return self.instr.attributes
+
+    @property
+    def operands(self):
+        return [Operand(self, i) for i in range(self.instr.operand_count)]
+
+    def __str__(self):
+        return STATIC_FORMATTER.format_instr(self)
 
 
 cdef class Decoder:
@@ -158,13 +202,23 @@ cdef class Decoder:
             &self.decoder, mode.value, enabled
         ))
 
-    cpdef DecodedInstruction decode(self, bytes data):
+    cpdef DecodedInstruction decode_one(self, bytes data):
         cdef const unsigned char* data_ptr = data
         cdef DecodedInstruction instr = DecodedInstruction()
         raise_if_err(ZydisDecoderDecodeBuffer(
             &self.decoder, data_ptr, len(data), &instr.instr
         ))
         return instr
+
+    def decode_all(self, bytes data):
+        """
+        Generator lazily decoding all instructions in the given bytes object,
+        yielding `DecodedInstruction` instances.
+        """
+        while len(data) != 0:
+            instr = self.decode_one(data)
+            data = data[instr.length:]
+            yield instr
 
 
 # =========================================================================== #
@@ -261,10 +315,22 @@ cdef class Formatter:
     def __cinit__(self, style = FormatterStyle.INTEL):
         raise_if_err(ZydisFormatterInit(&self.formatter, style))
 
-    cpdef str format(self, DecodedInstruction instr):
+    cpdef str format_instr(self, DecodedInstruction instr):
         cdef char[256] buffer
         raise_if_err(ZydisFormatterFormatInstruction(
             &self.formatter, &instr.instr, buffer, sizeof(buffer), 0
+        ))
+        return buffer.decode('utf8')
+
+    cpdef str format_operand(self, Operand operand):
+        cdef char[256] buffer
+        raise_if_err(ZydisFormatterFormatOperand(
+            &self.formatter,
+            &operand.instr.instr,
+            operand.index,
+            buffer,
+            sizeof(buffer),
+            0
         ))
         return buffer.decode('utf8')
 
@@ -274,19 +340,6 @@ cdef class Formatter:
 
 cdef Decoder STATIC_DECODER = Decoder()
 cdef Formatter STATIC_FORMATTER = Formatter()
-
-
-def decode_all(bytes data, *, Decoder decoder = STATIC_DECODER):
-    """
-    Generator lazily decoding all instructions in the given bytes object,
-    yielding `DecodedInstruction` instances. A decoder can be explicitly
-    specified via the `decoder` argument. If omitted, a shared decoder
-    (with default settings) is used.
-    """
-    while len(data) != 0:
-        instr = decoder.decode(data)
-        data = data[instr.length:]
-        yield instr
 
 
 def decode_and_format_all(
@@ -302,8 +355,8 @@ def decode_and_format_all(
     `formatter` arguments. If omitted, a shared decoder / formatter
     (with default settings) is used.
     """
-    for instr in decode_all(data, decoder=decoder):
-        yield instr, formatter.format(instr)
+    for instr in decoder.decode_all(data):
+        yield instr, formatter.format_instr(instr)
 
 
 # =========================================================================== #
