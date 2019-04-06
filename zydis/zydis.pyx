@@ -103,7 +103,6 @@ cdef inline int raise_if_err(ZyanStatus status) except -1:
 # [Decoder]                                                                   #
 # =========================================================================== #
 
-
 @cython.freelist(16)
 cdef class Operand:
     cdef DecodedInstruction instr
@@ -113,10 +112,82 @@ cdef class Operand:
         self.instr = instr
         self.index = index
 
+    cdef inline ZydisDecodedOperand* _get_op(self):
+        return &self.instr.instr.operands[self.index]
+
     def __str__(self):
         return STATIC_FORMATTER.format_operand(self)
 
+    def __repr__(self):
+        return f'<{self.__class__.__name__} "{self!s}" at 0x{id(self):x}>'
 
+
+cdef class RegOperand(Operand):
+    @property
+    def register(self):
+        return Register(self._get_op().reg.value)
+
+
+cdef class MemOperand(Operand):
+    @property
+    def type(self):
+        return MemoryOperandType(self._get_op().mem.type)
+
+    @property
+    def segment(self):
+        return Register(self._get_op().mem.segment)
+
+    @property
+    def base(self):
+        return Register(self._get_op().mem.base)
+
+    @property
+    def index(self):
+        return Register(self._get_op().mem.index)
+
+    @property
+    def scale(self):
+        return self._get_op().mem.scale
+
+
+cdef class PtrOperand(Operand):
+    @property
+    def segment(self):
+        return Register(self._get_op().ptr.segment)
+
+    @property
+    def offset(self):
+        return self._get_op().ptr.offset
+
+
+cdef class ImmOperand(Operand):
+    @property
+    def is_signed(self):
+        return bool(self._get_op().imm.is_signed)
+
+    @property
+    def is_relative(self):
+        return bool(self._get_op().imm.is_relative)
+
+    @property
+    def value(self):
+        cdef ZydisDecodedOperand* op = self._get_op()
+        return (
+            op.imm.value.s
+            if op.imm.is_signed else
+            op.imm.value.u
+        )
+
+
+cdef dict OP_INIT_MAP = {
+    ZYDIS_OPERAND_TYPE_IMMEDIATE: ImmOperand,
+    ZYDIS_OPERAND_TYPE_REGISTER: RegOperand,
+    ZYDIS_OPERAND_TYPE_MEMORY: MemOperand,
+    ZYDIS_OPERAND_TYPE_POINTER: PtrOperand,
+}
+
+
+@cython.final
 @cython.freelist(16)
 cdef class DecodedInstruction:
     cdef ZydisDecodedInstruction instr
@@ -149,18 +220,34 @@ cdef class DecodedInstruction:
     def attributes(self):
         return self.instr.attributes
 
+    cpdef inline Operand get_nth_operand(self, int n):
+        return OP_INIT_MAP[self.instr.operands[n].type](self, n)
+
     @property
     def operands(self):
-        return [Operand(self, i) for i in range(self.instr.operand_count)]
+        return [
+            self.get_nth_operand(i)
+            for i in range(self.instr.operand_count)
+        ]
+
+    @property
+    def explicit_operands(self):
+        return [
+            op
+            for op in self.operands
+            if (<Operand>op).instr.instr.operands[
+                   (<Operand>op).index
+            ].visibility == ZYDIS_OPERAND_VISIBILITY_EXPLICIT
+        ]
 
     def __str__(self):
         return STATIC_FORMATTER.format_instr(self)
 
     def __repr__(self):
-        instr_txt = STATIC_FORMATTER.format_instr(self)
-        return f'<{self.__class__.__name__} "{instr_txt}" at 0x{id(self):x}>'
+        return f'<{self.__class__.__name__} "{self!s}" at 0x{id(self):x}>'
 
 
+@cython.final
 cdef class Decoder:
     cdef ZydisDecoder decoder
 
@@ -200,12 +287,11 @@ cdef class Decoder:
             data = data[instr.length:]
             yield instr
 
-
 # =========================================================================== #
 # [Formatter]                                                                 #
 # =========================================================================== #
 
-
+@cython.final
 cdef class Formatter:
     cdef ZydisFormatter formatter
 
