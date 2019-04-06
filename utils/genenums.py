@@ -1,4 +1,4 @@
-from pycparser import c_parser, c_ast, parse_file, c_generator
+from pycparser import c_ast, parse_file, c_generator
 import os
 import sys
 
@@ -18,28 +18,6 @@ ast = parse_file(
 cgen = c_generator.CGenerator()
 
 
-class CSharpEnumVisitor(c_ast.NodeVisitor):
-    def visit_Enum(self, node):
-        enum_list = node.children()[0][1]
-        enum_vals = enum_list.enumerators
-        common_prefix = os.path.commonprefix([x.name for x in enum_vals])
-        print(f'public enum {node.name[:-1]}')
-        print('{')
-        for val in enum_vals:
-            if val.name.endswith('_REQUIRED_BITS'):
-                continue
-
-            xval = ''
-            if val.value:
-                expr = cgen.visit(val.value)
-                expr = expr.replace(common_prefix, '')
-                xval = f' = {expr}'
-
-            print(f'    {val.name[len(common_prefix):]}{xval},')
-
-        print('}\n')
-
-
 class CythonPxdEnumVisitor(c_ast.NodeVisitor):
     def visit_Enum(self, node):
         enum_list = node.children()[0][1]
@@ -53,7 +31,7 @@ class CythonPxdEnumVisitor(c_ast.NodeVisitor):
         print('')
 
 
-# non-exhaustive, ...
+# non-exhaustive ...
 PY_KEYWORDS = ['if', 'for', 'while']
 
 
@@ -74,9 +52,7 @@ class CythonPyxEnumVisitor(c_ast.NodeVisitor):
         print('')
 
 
-if sys.argv[1] == 'cs':
-    CSharpEnumVisitor().visit(ast)
-elif sys.argv[1] == 'pyx':
+if sys.argv[1] == 'pyx':
     print('# THIS FILE IS AUTO-GENERATED USING utils/genenums.py!')
     print('# distutils: language=3')
     print('# distutils: include_dirs=ZYDIS_INCLUDES\n')
