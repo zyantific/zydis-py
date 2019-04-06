@@ -1,7 +1,8 @@
 # distutils: language=3
 # distutils: include_dirs=ZYDIS_INCLUDES
+
 from enum import IntFlag
-from typing import List, Generator, Tuple
+from typing import Generator, List, Tuple, Dict, Set
 
 import cython
 
@@ -288,12 +289,20 @@ cdef class DecodedInstruction:
     cdef ZydisDecodedInstruction instr
 
     @property
+    def machine_mode(self) -> MachineMode:
+        return MachineMode(self.instr.machine_mode)
+
+    @property
     def mnemonic(self) -> Mnemonic:
         return Mnemonic(self.instr.mnemonic)
 
     @property
     def length(self) -> int:
         return self.instr.length
+
+    @property
+    def encoding(self) -> InstructionEncoding:
+        return InstructionEncoding(self.instr.encoding)
 
     @property
     def opcode(self) -> int:
@@ -335,6 +344,26 @@ cdef class DecodedInstruction:
             ].visibility == ZYDIS_OPERAND_VISIBILITY_EXPLICIT
         ]
 
+    @property
+    def accessed_flags(self) -> Dict[CPUFlag, CPUFlagAction]:
+        return {
+            CPUFlag(i): CPUFlagAction(self.instr.accessed_flags[i].action)
+            for i in range(<int>ZYDIS_CPUFLAG_MAX_VALUE)
+            if self.instr.accessed_flags[i].action != ZYDIS_CPUFLAG_ACTION_NONE
+        }
+
+    @property
+    def read_flags(self) -> Set[CPUFlag]:
+        return {
+            k
+            for k, v in self.accessed_flags.items()
+            if v == CPUFlagAction.SET_1
+        }
+
+    # TODO: avx
+    # TODO: meta
+    # TODO: raw
+
     def __str__(self) -> str:
         return STATIC_FORMATTER.format_instr(self)
 
@@ -358,6 +387,12 @@ cdef class Decoder:
         ))
 
     cpdef void enable_mode(self, mode, ZyanBool enabled):
+        # Supporting minimal mode would require lots of checks
+        # everywhere in order to assure no uninitialized memory is
+        # accessed.
+        assert mode != DecoderMode.MINIMAL, \
+            "Minimal mode is currently not supported in the Py bindings"
+
         raise_if_err(ZydisDecoderEnableMode(
             &self.decoder, mode.value, enabled
         ))
