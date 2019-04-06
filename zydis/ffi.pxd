@@ -68,15 +68,87 @@ cdef extern from "Zydis/Zydis.h":
         pass  # Opaque.
 
     ctypedef ZyanU64 ZydisInstructionAttributes
+    ctypedef ZyanU8 ZydisOperandActions
+    ctypedef ZyanU16 ZydisElementSize
+
+    ctypedef struct ZydisDecodedOperandReg:
+        ZydisRegister value
+
+    ctypedef struct ZydisDecodedOperandMemDisp:
+        ZyanBool has_displacement
+        ZyanI64 value
+
+    ctypedef struct ZydisDecodedOperandMem:
+        ZydisMemoryOperandType type
+        ZydisRegister segment
+        ZydisRegister base
+        ZydisRegister index
+        ZyanU8 scale
+        ZydisDecodedOperandMemDisp disp
+
+    ctypedef struct ZydisDecodedOperandPtr:
+        ZyanU16 segment
+        ZyanU32 offset
+
+    ctypedef union ZydisDecodedOperandImmVal:
+        ZyanU64 u
+        ZyanI64 s
+
+    ctypedef struct ZydisDecodedOperandImm:
+        ZyanBool is_signed
+        ZyanBool is_relative
+        ZydisDecodedOperandImmVal value
 
     ctypedef struct ZydisDecodedOperand:
-        pass  # TODO
+        ZyanU8 id
+        ZydisOperandType type
+        ZydisOperandVisibility visibility
+        ZydisOperandActions actions
+        ZydisOperandEncoding encoding
+        ZyanU16 size
+        ZydisElementType element_type
+        ZydisElementSize element_size
+        ZyanU16 element_count
+        ZydisDecodedOperandReg reg
+        ZydisDecodedOperandMem mem
+        ZydisDecodedOperandPtr ptr
+        ZydisDecodedOperandImm imm
 
-    ctypedef struct AccessedFlags:
+    ctypedef struct ZydisDecodedInstructionAccessedFlags:
         ZydisCPUFlagAction action
 
-    ctypedef struct AVX:
-        pass
+    ctypedef struct ZydisDecodedInstructionAvxMask:
+        ZydisMaskMode mode
+        ZydisRegister reg
+
+    ctypedef struct ZydisDecodedInstructionAvxBroadcast:
+        ZyanBool is_static
+        ZydisBroadcastMode mode
+
+    ctypedef struct ZydisDecodedInstructionAvxRounding:
+        ZydisRoundingMode mode
+
+    ctypedef struct ZydisDecodedInstructionAvxSwizzle:
+        ZydisSwizzleMode mode
+
+    ctypedef struct ZydisDecodedInstructionAvxConversion:
+        ZydisConversionMode mode
+
+    ctypedef struct ZydisDecodedInstructionAvx:
+        ZydisDecodedInstructionAvxMask mask
+        ZydisDecodedInstructionAvxBroadcast broadcast
+        ZydisDecodedInstructionAvxRounding rounding
+        ZydisDecodedInstructionAvxSwizzle swizzle
+        ZydisDecodedInstructionAvxConversion conversion
+        ZyanBool has_sea
+        ZyanBool has_eviction_hint
+
+    ctypedef struct ZydisDecodedInstructionMeta:
+        ZydisInstructionCategory category
+        ZydisISASet isa_set
+        ZydisISAExt isa_ext
+        ZydisBranchType branch_type
+        ZydisExceptionClass exception_class
 
     ctypedef struct ZydisDecodedInstruction:
         ZydisMachineMode machine_mode
@@ -91,7 +163,10 @@ cdef extern from "Zydis/Zydis.h":
         ZyanU8 operand_count
         ZydisDecodedOperand operands[13371337]  # TODO
         ZydisInstructionAttributes attributes
-        AccessedFlags accessed_flags[13371337]  # TODO
+        ZydisDecodedInstructionAccessedFlags accessed_flags[13371337]  # TODO
+        ZydisDecodedInstructionAvx avx
+        ZydisDecodedInstructionMeta meta
+
 
 # --------------------------------------------------------------------------- #
 # [Functions]                                                                 #

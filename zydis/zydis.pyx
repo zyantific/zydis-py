@@ -156,6 +156,10 @@ cdef class DecodedInstruction:
     def __str__(self):
         return STATIC_FORMATTER.format_instr(self)
 
+    def __repr__(self):
+        instr_txt = STATIC_FORMATTER.format_instr(self)
+        return f'<{self.__class__.__name__} "{instr_txt}" at 0x{id(self):x}>'
+
 
 cdef class Decoder:
     cdef ZydisDecoder decoder
@@ -177,10 +181,12 @@ cdef class Decoder:
         ))
 
     cpdef DecodedInstruction decode_one(self, bytes data):
-        cdef const unsigned char* data_ptr = data
         cdef DecodedInstruction instr = DecodedInstruction()
         raise_if_err(ZydisDecoderDecodeBuffer(
-            &self.decoder, data_ptr, len(data), &instr.instr
+            &self.decoder,
+            <const unsigned char*>data,
+            len(data),
+            &instr.instr,
         ))
         return instr
 
