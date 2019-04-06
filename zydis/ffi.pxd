@@ -10,43 +10,50 @@ from .cenums cimport *
 
 ctypedef ZyanU32 ZyanStatus
 
+# --------------------------------------------------------------------------- #
+# [#define enums]                                                             #
+# --------------------------------------------------------------------------- #
+
+# These are not actually enums, but we declare them as such, with their
+# underlying type as C type. When defining them as defines/constants,
+# Cython generates bad C code.
+
 # Modules.
 cdef extern from "Zydis/Zydis.h":
-    cdef ZyanStatus ZYAN_MODULE_ZYCORE
-    cdef ZyanStatus ZYAN_MODULE_ZYDIS
-    cdef ZyanStatus ZYAN_MODULE_USER
+    ctypedef enum XX_ZyanStatusModule "ZyanStatus":
+        ZYAN_MODULE_ZYCORE
+        ZYAN_MODULE_ZYDIS
+        ZYAN_MODULE_USER
 
-# Status codes.
-cdef extern from "Zydis/Zydis.h":
-    # Zycore
-    cdef ZyanStatus ZYAN_STATUS_MODULE
-    cdef ZyanStatus ZYAN_STATUS_CODE
-    cdef ZyanStatus ZYAN_STATUS_SUCCESS
-    cdef ZyanStatus ZYAN_STATUS_FAILED
-    cdef ZyanStatus ZYAN_STATUS_TRUE
-    cdef ZyanStatus ZYAN_STATUS_FALSE
-    cdef ZyanStatus ZYAN_STATUS_INVALID_ARGUMENT
-    cdef ZyanStatus ZYAN_STATUS_INVALID_OPERATION
-    cdef ZyanStatus ZYAN_STATUS_NOT_FOUND
-    cdef ZyanStatus ZYAN_STATUS_OUT_OF_RANGE
-    cdef ZyanStatus ZYAN_STATUS_INSUFFICIENT_BUFFER_SIZE
-    cdef ZyanStatus ZYAN_STATUS_NOT_ENOUGH_MEMORY
-    cdef ZyanStatus ZYAN_STATUS_BAD_SYSTEMCALL
-    cdef ZyanStatus ZYAN_STATUS_OUT_OF_RESOURCES
+    # Zycore status codes.
+    ctypedef enum XX_ZyanStatusCode "ZyanStatus":
+        ZYAN_STATUS_SUCCESS
+        ZYAN_STATUS_FAILED
+        ZYAN_STATUS_TRUE
+        ZYAN_STATUS_FALSE
+        ZYAN_STATUS_INVALID_ARGUMENT
+        ZYAN_STATUS_INVALID_OPERATION
+        ZYAN_STATUS_NOT_FOUND
+        ZYAN_STATUS_OUT_OF_RANGE
+        ZYAN_STATUS_INSUFFICIENT_BUFFER_SIZE
+        ZYAN_STATUS_NOT_ENOUGH_MEMORY
+        ZYAN_STATUS_BAD_SYSTEMCALL
+        ZYAN_STATUS_OUT_OF_RESOURCES
 
-    # Zydis
-    cdef ZyanStatus ZYDIS_STATUS_NO_MORE_DATA
-    cdef ZyanStatus ZYDIS_STATUS_DECODING_ERROR
-    cdef ZyanStatus ZYDIS_STATUS_INSTRUCTION_TOO_LONG
-    cdef ZyanStatus ZYDIS_STATUS_BAD_REGISTER
-    cdef ZyanStatus ZYDIS_STATUS_ILLEGAL_LOCK
-    cdef ZyanStatus ZYDIS_STATUS_ILLEGAL_LEGACY_PFX
-    cdef ZyanStatus ZYDIS_STATUS_ILLEGAL_REX
-    cdef ZyanStatus ZYDIS_STATUS_INVALID_MAP
-    cdef ZyanStatus ZYDIS_STATUS_MALFORMED_EVEX
-    cdef ZyanStatus ZYDIS_STATUS_MALFORMED_MVEX
-    cdef ZyanStatus ZYDIS_STATUS_INVALID_MASK
-    cdef ZyanStatus ZYDIS_STATUS_SKIP_TOKEN
+    # Zydis status codes.
+    ctypedef enum XX_ZydisStatusCode "ZyanStatus":
+        ZYDIS_STATUS_NO_MORE_DATA
+        ZYDIS_STATUS_DECODING_ERROR
+        ZYDIS_STATUS_INSTRUCTION_TOO_LONG
+        ZYDIS_STATUS_BAD_REGISTER
+        ZYDIS_STATUS_ILLEGAL_LOCK
+        ZYDIS_STATUS_ILLEGAL_LEGACY_PFX
+        ZYDIS_STATUS_ILLEGAL_REX
+        ZYDIS_STATUS_INVALID_MAP
+        ZYDIS_STATUS_MALFORMED_EVEX
+        ZYDIS_STATUS_MALFORMED_MVEX
+        ZYDIS_STATUS_INVALID_MASK
+        ZYDIS_STATUS_SKIP_TOKEN
 
 # =========================================================================== #
 # [Zydis.h]                                                                   #
@@ -59,6 +66,64 @@ cdef extern from "Zydis/Zydis.h":
 # [Decoder]                                                                   #
 # =========================================================================== #
 
+cdef extern from "Zydis/Zydis.h":
+    ctypedef ZyanU64 ZydisInstructionAttributes
+
+# --------------------------------------------------------------------------- #
+# [#define enums]                                                             #
+# --------------------------------------------------------------------------- #
+
+cdef extern from "Zydis/Zydis.h":
+    ctypedef enum XX_ZydisInstrAttrib "ZydisInstructionAttributes":
+        ZYDIS_ATTRIB_HAS_MODRM
+        ZYDIS_ATTRIB_HAS_SIB
+        ZYDIS_ATTRIB_HAS_REX
+        ZYDIS_ATTRIB_HAS_XOP
+        ZYDIS_ATTRIB_HAS_VEX
+        ZYDIS_ATTRIB_HAS_EVEX
+        ZYDIS_ATTRIB_HAS_MVEX
+        ZYDIS_ATTRIB_IS_RELATIVE
+        ZYDIS_ATTRIB_IS_PRIVILEGED
+        ZYDIS_ATTRIB_CPUFLAG_ACCESS
+        ZYDIS_ATTRIB_CPU_STATE_CR
+        ZYDIS_ATTRIB_CPU_STATE_CW
+        ZYDIS_ATTRIB_FPU_STATE_CR
+        ZYDIS_ATTRIB_FPU_STATE_CW
+        ZYDIS_ATTRIB_XMM_STATE_CR
+        ZYDIS_ATTRIB_XMM_STATE_CW
+        ZYDIS_ATTRIB_ACCEPTS_LOCK
+        ZYDIS_ATTRIB_ACCEPTS_REP
+        ZYDIS_ATTRIB_ACCEPTS_REPE
+        ZYDIS_ATTRIB_ACCEPTS_REPZ
+        ZYDIS_ATTRIB_ACCEPTS_REPNE
+        ZYDIS_ATTRIB_ACCEPTS_REPNZ
+        ZYDIS_ATTRIB_ACCEPTS_BND
+        ZYDIS_ATTRIB_ACCEPTS_XACQUIRE
+        ZYDIS_ATTRIB_ACCEPTS_XRELEASE
+        ZYDIS_ATTRIB_ACCEPTS_HLE_WITHOUT_LOCK
+        ZYDIS_ATTRIB_ACCEPTS_BRANCH_HINTS
+        ZYDIS_ATTRIB_ACCEPTS_SEGMENT
+        ZYDIS_ATTRIB_HAS_LOCK
+        ZYDIS_ATTRIB_HAS_REP
+        ZYDIS_ATTRIB_HAS_REPE
+        ZYDIS_ATTRIB_HAS_REPZ
+        ZYDIS_ATTRIB_HAS_REPNE
+        ZYDIS_ATTRIB_HAS_REPNZ
+        ZYDIS_ATTRIB_HAS_BND
+        ZYDIS_ATTRIB_HAS_XACQUIRE
+        ZYDIS_ATTRIB_HAS_XRELEASE
+        ZYDIS_ATTRIB_HAS_BRANCH_NOT_TAKEN
+        ZYDIS_ATTRIB_HAS_BRANCH_TAKEN
+        ZYDIS_ATTRIB_HAS_SEGMENT
+        ZYDIS_ATTRIB_HAS_SEGMENT_CS
+        ZYDIS_ATTRIB_HAS_SEGMENT_SS
+        ZYDIS_ATTRIB_HAS_SEGMENT_DS
+        ZYDIS_ATTRIB_HAS_SEGMENT_ES
+        ZYDIS_ATTRIB_HAS_SEGMENT_FS
+        ZYDIS_ATTRIB_HAS_SEGMENT_GS
+        ZYDIS_ATTRIB_HAS_OPERANDSIZE
+        ZYDIS_ATTRIB_HAS_ADDRESSSIZE
+
 # --------------------------------------------------------------------------- #
 # [Types]                                                                     #
 # --------------------------------------------------------------------------- #
@@ -67,7 +132,6 @@ cdef extern from "Zydis/Zydis.h":
     ctypedef struct ZydisDecoder:
         pass  # Opaque.
 
-    ctypedef ZyanU64 ZydisInstructionAttributes
     ctypedef ZyanU8 ZydisOperandActions
     ctypedef ZyanU16 ZydisElementSize
 

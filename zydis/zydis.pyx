@@ -1,5 +1,7 @@
 # distutils: language=3
 # distutils: include_dirs=ZYDIS_INCLUDES
+from enum import IntFlag
+from typing import List, Generator, Tuple
 
 import cython
 
@@ -69,7 +71,7 @@ cdef class StatusCode:
 
     @property
     def code(self):
-        return self.status & 0xFFFFF
+        return StatusCodeId(self.status & 0xFFFFF)
 
     def __str__(self):
         return (
@@ -82,10 +84,14 @@ cdef class StatusCode:
 
 
 cdef class ZydisError(Exception):
-    cpdef StatusCode code
+    cdef StatusCode code
 
     def __cinit__(self, StatusCode code):
         self.code = code
+
+    @property
+    def status_code(self):
+        return self.code
 
     def __str__(self):
         return f'Zydis error: {self.code!s}'
@@ -98,6 +104,95 @@ cdef inline int raise_if_err(ZyanStatus status) except -1:
     if is_success(status):
         return 0
     raise ZydisError(StatusCode(status))
+
+# =========================================================================== #
+# [Manually ported enums]                                                     #
+# =========================================================================== #
+
+# Some enums must be ported manually (as opposed to the majority generated
+# from the C sources via `utils/genenums.py`) because they are defined as
+# `#define`s.
+
+class StatusCodeId(IntEnum):
+    # Zycore
+    STATUS_SUCCESS = ZYAN_STATUS_SUCCESS & 0xFFFFF
+    STATUS_FAILED = ZYAN_STATUS_FAILED & 0xFFFFF
+    STATUS_TRUE = ZYAN_STATUS_TRUE & 0xFFFFF
+    STATUS_FALSE = ZYAN_STATUS_FALSE & 0xFFFFF
+    STATUS_INVALID_ARGUMENT = ZYAN_STATUS_INVALID_ARGUMENT & 0xFFFFF
+    STATUS_INVALID_OPERATION = ZYAN_STATUS_INVALID_OPERATION & 0xFFFFF
+    STATUS_NOT_FOUND = ZYAN_STATUS_NOT_FOUND & 0xFFFFF
+    STATUS_OUT_OF_RANGE = ZYAN_STATUS_OUT_OF_RANGE & 0xFFFFF
+    STATUS_INSUFFICIENT_BUFFER_SIZE = \
+        ZYAN_STATUS_INSUFFICIENT_BUFFER_SIZE & 0xFFFFF
+    STATUS_NOT_ENOUGH_MEMORY = ZYAN_STATUS_NOT_ENOUGH_MEMORY & 0xFFFFF
+    STATUS_BAD_SYSTEMCALL = ZYAN_STATUS_BAD_SYSTEMCALL & 0xFFFFF
+    STATUS_OUT_OF_RESOURCES = ZYAN_STATUS_OUT_OF_RESOURCES & 0xFFFFF
+
+    # Zydis
+    NO_MORE_DATA = ZYDIS_STATUS_NO_MORE_DATA & 0xFFFFF
+    DECODING_ERROR = ZYDIS_STATUS_DECODING_ERROR & 0xFFFFF
+    INSTRUCTION_TOO_LONG = ZYDIS_STATUS_INSTRUCTION_TOO_LONG & 0xFFFFF
+    BAD_REGISTER = ZYDIS_STATUS_BAD_REGISTER & 0xFFFFF
+    ILLEGAL_LOCK = ZYDIS_STATUS_ILLEGAL_LOCK & 0xFFFFF
+    ILLEGAL_LEGACY_PFX = ZYDIS_STATUS_ILLEGAL_LEGACY_PFX & 0xFFFFF
+    ILLEGAL_REX = ZYDIS_STATUS_ILLEGAL_REX & 0xFFFFF
+    INVALID_MAP = ZYDIS_STATUS_INVALID_MAP & 0xFFFFF
+    MALFORMED_EVEX = ZYDIS_STATUS_MALFORMED_EVEX & 0xFFFFF
+    MALFORMED_MVEX = ZYDIS_STATUS_MALFORMED_MVEX & 0xFFFFF
+    INVALID_MASK = ZYDIS_STATUS_INVALID_MASK & 0xFFFFF
+    SKIP_TOKEN = ZYDIS_STATUS_SKIP_TOKEN & 0xFFFFF
+
+
+class Attribute(IntFlag):
+    HAS_MODRM = ZYDIS_ATTRIB_HAS_MODRM
+    HAS_SIB = ZYDIS_ATTRIB_HAS_SIB
+    HAS_REX = ZYDIS_ATTRIB_HAS_REX
+    HAS_XOP = ZYDIS_ATTRIB_HAS_XOP
+    HAS_VEX = ZYDIS_ATTRIB_HAS_VEX
+    HAS_EVEX = ZYDIS_ATTRIB_HAS_EVEX
+    HAS_MVEX = ZYDIS_ATTRIB_HAS_MVEX
+    IS_RELATIVE = ZYDIS_ATTRIB_IS_RELATIVE
+    IS_PRIVILEGED = ZYDIS_ATTRIB_IS_PRIVILEGED
+    CPUFLAG_ACCESS = ZYDIS_ATTRIB_CPUFLAG_ACCESS
+    CPU_STATE_CR = ZYDIS_ATTRIB_CPU_STATE_CR
+    CPU_STATE_CW = ZYDIS_ATTRIB_CPU_STATE_CW
+    FPU_STATE_CR = ZYDIS_ATTRIB_FPU_STATE_CR
+    FPU_STATE_CW = ZYDIS_ATTRIB_FPU_STATE_CW
+    XMM_STATE_CR = ZYDIS_ATTRIB_XMM_STATE_CR
+    XMM_STATE_CW = ZYDIS_ATTRIB_XMM_STATE_CW
+    ACCEPTS_LOCK = ZYDIS_ATTRIB_ACCEPTS_LOCK
+    ACCEPTS_REP = ZYDIS_ATTRIB_ACCEPTS_REP
+    ACCEPTS_REPE = ZYDIS_ATTRIB_ACCEPTS_REPE
+    ACCEPTS_REPZ = ZYDIS_ATTRIB_ACCEPTS_REPZ
+    ACCEPTS_REPNE = ZYDIS_ATTRIB_ACCEPTS_REPNE
+    ACCEPTS_REPNZ = ZYDIS_ATTRIB_ACCEPTS_REPNZ
+    ACCEPTS_BND = ZYDIS_ATTRIB_ACCEPTS_BND
+    ACCEPTS_XACQUIRE = ZYDIS_ATTRIB_ACCEPTS_XACQUIRE
+    ACCEPTS_XRELEASE = ZYDIS_ATTRIB_ACCEPTS_XRELEASE
+    ACCEPTS_HLE_WITHOUT_LOCK = ZYDIS_ATTRIB_ACCEPTS_HLE_WITHOUT_LOCK
+    ACCEPTS_BRANCH_HINTS = ZYDIS_ATTRIB_ACCEPTS_BRANCH_HINTS
+    ACCEPTS_SEGMENT = ZYDIS_ATTRIB_ACCEPTS_SEGMENT
+    HAS_LOCK = ZYDIS_ATTRIB_HAS_LOCK
+    HAS_REP = ZYDIS_ATTRIB_HAS_REP
+    HAS_REPE = ZYDIS_ATTRIB_HAS_REPE
+    HAS_REPZ = ZYDIS_ATTRIB_HAS_REPZ
+    HAS_REPNE = ZYDIS_ATTRIB_HAS_REPNE
+    HAS_REPNZ = ZYDIS_ATTRIB_HAS_REPNZ
+    HAS_BND = ZYDIS_ATTRIB_HAS_BND
+    HAS_XACQUIRE = ZYDIS_ATTRIB_HAS_XACQUIRE
+    HAS_XRELEASE = ZYDIS_ATTRIB_HAS_XRELEASE
+    HAS_BRANCH_NOT_TAKEN = ZYDIS_ATTRIB_HAS_BRANCH_NOT_TAKEN
+    HAS_BRANCH_TAKEN = ZYDIS_ATTRIB_HAS_BRANCH_TAKEN
+    HAS_SEGMENT = ZYDIS_ATTRIB_HAS_SEGMENT
+    HAS_SEGMENT_CS = ZYDIS_ATTRIB_HAS_SEGMENT_CS
+    HAS_SEGMENT_SS = ZYDIS_ATTRIB_HAS_SEGMENT_SS
+    HAS_SEGMENT_DS = ZYDIS_ATTRIB_HAS_SEGMENT_DS
+    HAS_SEGMENT_ES = ZYDIS_ATTRIB_HAS_SEGMENT_ES
+    HAS_SEGMENT_FS = ZYDIS_ATTRIB_HAS_SEGMENT_FS
+    HAS_SEGMENT_GS = ZYDIS_ATTRIB_HAS_SEGMENT_GS
+    HAS_OPERANDSIZE = ZYDIS_ATTRIB_HAS_OPERANDSIZE
+    HAS_ADDRESSSIZE = ZYDIS_ATTRIB_HAS_ADDRESSSIZE
 
 # =========================================================================== #
 # [Decoder]                                                                   #
@@ -124,53 +219,53 @@ cdef class Operand:
 
 cdef class RegOperand(Operand):
     @property
-    def register(self):
+    def register(self) -> Register:
         return Register(self._get_op().reg.value)
 
 
 cdef class MemOperand(Operand):
     @property
-    def type(self):
+    def type(self) -> MemoryOperandType:
         return MemoryOperandType(self._get_op().mem.type)
 
     @property
-    def segment(self):
+    def segment(self) -> Register:
         return Register(self._get_op().mem.segment)
 
     @property
-    def base(self):
+    def base(self) -> Register:
         return Register(self._get_op().mem.base)
 
     @property
-    def index(self):
+    def index(self) -> Register:
         return Register(self._get_op().mem.index)
 
     @property
-    def scale(self):
+    def scale(self) -> int:
         return self._get_op().mem.scale
 
 
 cdef class PtrOperand(Operand):
     @property
-    def segment(self):
+    def segment(self) -> Register:
         return Register(self._get_op().ptr.segment)
 
     @property
-    def offset(self):
+    def offset(self) -> int:
         return self._get_op().ptr.offset
 
 
 cdef class ImmOperand(Operand):
     @property
-    def is_signed(self):
+    def is_signed(self) -> bool:
         return bool(self._get_op().imm.is_signed)
 
     @property
-    def is_relative(self):
+    def is_relative(self) -> bool:
         return bool(self._get_op().imm.is_relative)
 
     @property
-    def value(self):
+    def value(self) -> int:
         cdef ZydisDecodedOperand* op = self._get_op()
         return (
             op.imm.value.s
@@ -193,45 +288,45 @@ cdef class DecodedInstruction:
     cdef ZydisDecodedInstruction instr
 
     @property
-    def mnemonic(self):
-        return self.instr.mnemonic
+    def mnemonic(self) -> Mnemonic:
+        return Mnemonic(self.instr.mnemonic)
 
     @property
-    def length(self):
+    def length(self) -> int:
         return self.instr.length
 
     @property
-    def opcode(self):
+    def opcode(self) -> int:
         return self.instr.opcode
 
     @property
-    def stack_width(self):
+    def stack_width(self) -> int:
         return self.instr.stack_width
 
     @property
-    def operand_width(self):
+    def operand_width(self) -> int:
         return self.instr.stack_width
 
     @property
-    def address_width(self):
+    def address_width(self) -> int:
         return self.instr.address_width
 
     @property
-    def attributes(self):
-        return self.instr.attributes
+    def attributes(self) -> Attribute:
+        return Attribute(self.instr.attributes)
 
     cpdef inline Operand get_nth_operand(self, int n):
         return OP_INIT_MAP[self.instr.operands[n].type](self, n)
 
     @property
-    def operands(self):
+    def operands(self) -> List[Operand]:
         return [
             self.get_nth_operand(i)
             for i in range(self.instr.operand_count)
         ]
 
     @property
-    def explicit_operands(self):
+    def explicit_operands(self) -> Operand:
         return [
             op
             for op in self.operands
@@ -240,10 +335,10 @@ cdef class DecodedInstruction:
             ].visibility == ZYDIS_OPERAND_VISIBILITY_EXPLICIT
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return STATIC_FORMATTER.format_instr(self)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'<{self.__class__.__name__} "{self!s}" at 0x{id(self):x}>'
 
 
@@ -277,7 +372,9 @@ cdef class Decoder:
         ))
         return instr
 
-    def decode_all(self, bytes data):
+    def decode_all(self, bytes data) -> Generator[
+        DecodedInstruction, None, None
+    ]:
         """
         Generator lazily decoding all instructions in the given bytes object,
         yielding `DecodedInstruction` instances.
@@ -330,7 +427,7 @@ def decode_and_format_all(
     *,
     Decoder decoder = STATIC_DECODER,
     Formatter formatter = STATIC_FORMATTER,
-):
+) -> Generator[Tuple[DecodedInstruction, str], None, None]:
     """
     Generator lazily decoding and formatting all instructions in the given
     bytes object, yielding `(DecodedInstruction, str)` pairs. `Decoder`
