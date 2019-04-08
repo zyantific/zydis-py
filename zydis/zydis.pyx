@@ -201,6 +201,7 @@ class Attribute(IntFlag):
 
 @cython.freelist(16)
 cdef class Operand:
+    """Instruction operand, such as `eax` or `[rbp+0x30]`."""
     cdef DecodedInstruction instr
     cdef int index
 
@@ -219,12 +220,14 @@ cdef class Operand:
 
 
 cdef class RegOperand(Operand):
+    """Register operand, such as `rax`."""
     @property
     def register(self) -> Register:
         return Register(self._get_op().reg.value)
 
 
 cdef class MemOperand(Operand):
+    """Memory operand, such as `[rbp+30]`."""
     @property
     def type(self) -> MemoryOperandType:
         return MemoryOperandType(self._get_op().mem.type)
@@ -247,6 +250,7 @@ cdef class MemOperand(Operand):
 
 
 cdef class PtrOperand(Operand):
+    """Pointer operand (used in far jumps/calls)."""
     @property
     def segment(self) -> Register:
         return Register(self._get_op().ptr.segment)
@@ -257,6 +261,7 @@ cdef class PtrOperand(Operand):
 
 
 cdef class ImmOperand(Operand):
+    """Immediate operand, e.g. `0x1337`."""
     @property
     def is_signed(self) -> bool:
         return bool(self._get_op().imm.is_signed)
@@ -286,6 +291,7 @@ cdef dict OP_INIT_MAP = {
 @cython.final
 @cython.freelist(16)
 cdef class DecodedInstruction:
+    """Information about a decoded instruction."""
     cdef ZydisDecodedInstruction instr
 
     @property
@@ -373,6 +379,7 @@ cdef class DecodedInstruction:
 
 @cython.final
 cdef class Decoder:
+    """Decode byte arrays into machine interpretable structs."""
     cdef ZydisDecoder decoder
 
     def __cinit__(
@@ -425,6 +432,7 @@ cdef class Decoder:
 
 @cython.final
 cdef class Formatter:
+    """Formats `DecodedInstruction`s to human readable test."""
     cdef ZydisFormatter formatter
 
     def __cinit__(self, style = FormatterStyle.INTEL):
