@@ -366,9 +366,17 @@ cdef class DecodedInstruction:
             if v == CPUFlagAction.SET_1
         }
 
-    # TODO: avx
-    # TODO: meta
-    # TODO: raw
+    @property
+    def meta(self):
+        return dict(self.instr.meta)
+
+    @property
+    def avx(self):
+        return dict(self.instr.avx)
+
+    @property
+    def raw(self):
+        return dict(self.instr.raw)
 
     def __str__(self) -> str:
         return STATIC_FORMATTER.format_instr(self)

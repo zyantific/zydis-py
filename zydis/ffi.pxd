@@ -135,33 +135,33 @@ cdef extern from "Zydis/Zydis.h":
     ctypedef ZyanU8 ZydisOperandActions
     ctypedef ZyanU16 ZydisElementSize
 
-    ctypedef struct ZydisDecodedOperandReg:
+    cdef struct ZydisDecodedOperandReg_:
         ZydisRegister value
 
-    ctypedef struct ZydisDecodedOperandMemDisp:
+    cdef struct ZydisDecodedOperandMemDisp_:
         ZyanBool has_displacement
         ZyanI64 value
 
-    ctypedef struct ZydisDecodedOperandMem:
+    cdef struct ZydisDecodedOperandMem_:
         ZydisMemoryOperandType type
         ZydisRegister segment
         ZydisRegister base
         ZydisRegister index
         ZyanU8 scale
-        ZydisDecodedOperandMemDisp disp
+        ZydisDecodedOperandMemDisp_ disp
 
-    ctypedef struct ZydisDecodedOperandPtr:
+    cdef struct ZydisDecodedOperandPtr_:
         ZyanU16 segment
         ZyanU32 offset
 
-    ctypedef union ZydisDecodedOperandImmVal:
+    cdef union ZydisDecodedOperandImmValue_:
         ZyanU64 u
         ZyanI64 s
 
-    ctypedef struct ZydisDecodedOperandImm:
+    cdef struct ZydisDecodedOperandImm_:
         ZyanBool is_signed
         ZyanBool is_relative
-        ZydisDecodedOperandImmVal value
+        ZydisDecodedOperandImmValue_ value
 
     ctypedef struct ZydisDecodedOperand:
         ZyanU8 id
@@ -173,46 +173,153 @@ cdef extern from "Zydis/Zydis.h":
         ZydisElementType element_type
         ZydisElementSize element_size
         ZyanU16 element_count
-        ZydisDecodedOperandReg reg
-        ZydisDecodedOperandMem mem
-        ZydisDecodedOperandPtr ptr
-        ZydisDecodedOperandImm imm
+        ZydisDecodedOperandReg_ reg
+        ZydisDecodedOperandMem_ mem
+        ZydisDecodedOperandPtr_ ptr
+        ZydisDecodedOperandImm_ imm
 
-    ctypedef struct ZydisDecodedInstructionAccessedFlags:
+    cdef struct ZydisDecodedInstructionAccessedFlags_:
         ZydisCPUFlagAction action
 
-    ctypedef struct ZydisDecodedInstructionAvxMask:
+    cdef struct ZydisDecodedInstructionAvxMask_:
         ZydisMaskMode mode
         ZydisRegister reg
 
-    ctypedef struct ZydisDecodedInstructionAvxBroadcast:
+    cdef struct ZydisDecodedInstructionAvxBroadcast_:
         ZyanBool is_static
         ZydisBroadcastMode mode
 
-    ctypedef struct ZydisDecodedInstructionAvxRounding:
+    cdef struct ZydisDecodedInstructionAvxRounding_:
         ZydisRoundingMode mode
 
-    ctypedef struct ZydisDecodedInstructionAvxSwizzle:
+    cdef struct ZydisDecodedInstructionAvxSwizzle_:
         ZydisSwizzleMode mode
 
-    ctypedef struct ZydisDecodedInstructionAvxConversion:
+    cdef struct ZydisDecodedInstructionAvxConversion_:
         ZydisConversionMode mode
 
-    ctypedef struct ZydisDecodedInstructionAvx:
-        ZydisDecodedInstructionAvxMask mask
-        ZydisDecodedInstructionAvxBroadcast broadcast
-        ZydisDecodedInstructionAvxRounding rounding
-        ZydisDecodedInstructionAvxSwizzle swizzle
-        ZydisDecodedInstructionAvxConversion conversion
-        ZyanBool has_sea
+    cdef struct ZydisDecodedInstructionAvx_:
+        ZydisDecodedInstructionAvxMask_ mask
+        ZydisDecodedInstructionAvxBroadcast_ broadcast
+        ZydisDecodedInstructionAvxRounding_ rounding
+        ZydisDecodedInstructionAvxSwizzle_ swizzle
+        ZydisDecodedInstructionAvxConversion_ conversion
+        ZyanBool has_sae
         ZyanBool has_eviction_hint
 
-    ctypedef struct ZydisDecodedInstructionMeta:
+    cdef struct ZydisDecodedInstructionMeta_:
         ZydisInstructionCategory category
         ZydisISASet isa_set
         ZydisISAExt isa_ext
         ZydisBranchType branch_type
         ZydisExceptionClass exception_class
+
+    cdef struct ZydisDecodedInstructionRawPrefixes_:
+        ZydisPrefixType type
+        ZyanU8 value
+
+    cdef struct ZydisDecodedInstructionRawRex_:
+        ZyanU8 W
+        ZyanU8 R
+        ZyanU8 X
+        ZyanU8 B
+        ZyanU8 offset
+
+    cdef struct ZydisDecodedInstructionRawXop_:
+        ZyanU8 R
+        ZyanU8 X
+        ZyanU8 B
+        ZyanU8 m_mmmm
+        ZyanU8 W
+        ZyanU8 vvvv
+        ZyanU8 L
+        ZyanU8 pp
+        ZyanU8 offset
+
+    cdef struct ZydisDecodedInstructionRawVex_:
+        ZyanU8 R
+        ZyanU8 X
+        ZyanU8 B
+        ZyanU8 m_mmmm
+        ZyanU8 W
+        ZyanU8 vvvv
+        ZyanU8 L
+        ZyanU8 pp
+        ZyanU8 offset
+        ZyanU8 size
+
+    cdef struct ZydisDecodedInstructionRawEvex_:
+        ZyanU8 R
+        ZyanU8 X
+        ZyanU8 B
+        ZyanU8 R2
+        ZyanU8 mm
+        ZyanU8 W
+        ZyanU8 vvvv
+        ZyanU8 pp
+        ZyanU8 z
+        ZyanU8 L2
+        ZyanU8 L
+        ZyanU8 b
+        ZyanU8 V2
+        ZyanU8 aaa
+        ZyanU8 offset
+
+    cdef struct ZydisDecodedInstructionRawMvex_:
+        ZyanU8 R
+        ZyanU8 X
+        ZyanU8 B
+        ZyanU8 R2
+        ZyanU8 mmmm
+        ZyanU8 W
+        ZyanU8 vvvv
+        ZyanU8 pp
+        ZyanU8 E
+        ZyanU8 SSS
+        ZyanU8 V2
+        ZyanU8 kkk
+        ZyanU8 offset
+
+    cdef struct ZydisDecodedInstructionModRm_:
+        ZyanU8 mod
+        ZyanU8 reg
+        ZyanU8 rm
+        ZyanU8 offset
+
+    cdef struct ZydisDecodedInstructionRawSib_:
+        ZyanU8 scale
+        ZyanU8 index
+        ZyanU8 base
+        ZyanU8 offset
+
+    cdef struct ZydisDecodedInstructionRawDisp_:
+        ZyanI64 value
+        ZyanU8 size
+        ZyanU8 offset
+
+    cdef union ZydisDecodedInstructionRawImmValue_:
+       ZyanU64 u
+       ZyanI64 s
+
+    cdef struct ZydisDecodedInstructionRawImm_:
+       ZyanBool is_signed
+       ZyanBool is_relative
+       ZydisDecodedInstructionRawImmValue_ value
+       ZyanU8 size
+       ZyanU8 offset
+
+    cdef struct ZydisDecodedInstructionRaw_:
+        ZyanU8 prefix_count
+        ZydisDecodedInstructionRawPrefixes_ prefixes[15]
+        ZydisDecodedInstructionRawRex_ rex
+        ZydisDecodedInstructionRawXop_ xop
+        ZydisDecodedInstructionRawVex_ vex
+        ZydisDecodedInstructionRawEvex_ evex
+        ZydisDecodedInstructionRawMvex_ mvex
+        ZydisDecodedInstructionModRm_ modrm
+        ZydisDecodedInstructionRawSib_ sib
+        ZydisDecodedInstructionRawDisp_ disp
+        ZydisDecodedInstructionRawImm_ imm[2]
 
     ctypedef struct ZydisDecodedInstruction:
         ZydisMachineMode machine_mode
@@ -225,11 +332,11 @@ cdef extern from "Zydis/Zydis.h":
         ZyanU8 operand_width
         ZyanU8 address_width
         ZyanU8 operand_count
-        ZydisDecodedOperand operands[13371337]  # TODO
+        ZydisDecodedOperand operands[13371337]
         ZydisInstructionAttributes attributes
-        ZydisDecodedInstructionAccessedFlags accessed_flags[13371337]  # TODO
-        ZydisDecodedInstructionAvx avx
-        ZydisDecodedInstructionMeta meta
+        ZydisDecodedInstructionAccessedFlags_ accessed_flags[13371337]
+        ZydisDecodedInstructionAvx_ avx
+        ZydisDecodedInstructionMeta_ meta
 
 
 # --------------------------------------------------------------------------- #
