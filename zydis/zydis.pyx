@@ -2,7 +2,7 @@
 # distutils: include_dirs=ZYDIS_INCLUDES
 
 from enum import IntFlag
-from typing import Generator, List, Tuple, Dict, Set
+from typing import Generator, List, Tuple, Dict, Set, Optional
 
 import cython
 
@@ -245,6 +245,12 @@ cdef class MemOperand(Operand):
         return Register(self._get_op().mem.index)
 
     @property
+    def disp(self) -> Optional[int]:
+        if self._get_op().mem.disp.has_displacement:
+            return self._get_op().mem.disp.value
+        return None
+
+    @property
     def scale(self) -> int:
         return self._get_op().mem.scale
 
@@ -374,9 +380,9 @@ cdef class DecodedInstruction:
     def avx(self):
         return dict(self.instr.avx)
 
-    @property
-    def raw(self):
-        return dict(self.instr.raw)
+    # @property
+    # def raw(self):
+    #     return dict(self.instr.raw)
 
     def __str__(self) -> str:
         return STATIC_FORMATTER.format_instr(self)
