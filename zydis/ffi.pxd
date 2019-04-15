@@ -337,6 +337,7 @@ cdef extern from "Zydis/Zydis.h":
         ZydisDecodedInstructionAccessedFlags_ accessed_flags[13371337]
         ZydisDecodedInstructionAvx_ avx
         ZydisDecodedInstructionMeta_ meta
+        ZydisDecodedInstructionRaw_ raw
 
 
 # --------------------------------------------------------------------------- #

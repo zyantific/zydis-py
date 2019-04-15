@@ -294,6 +294,61 @@ cdef dict OP_INIT_MAP = {
 }
 
 
+cdef class DecodedInstructionRaw:
+    cdef DecodedInstruction instr
+
+    def __cinit__(self, DecodedInstruction instr):
+        self.instr = instr
+
+    @property
+    def prefixes(self) -> List[Tuple[ZydisPrefixType, int]]:
+        cdef ZydisDecodedInstructionRaw_* raw = &self.instr.instr.raw
+        return [
+            (PrefixType(raw.prefixes[i].type), raw.prefixes[i].value)
+            for i in range(raw.prefix_count)
+        ]
+
+    @property
+    def rex(self) -> Dict:
+        return dict(self.instr.instr.raw.rex)
+
+    @property
+    def xop(self) -> Dict:
+        return dict(self.instr.instr.raw.xop)
+
+    @property
+    def vex(self) -> Dict:
+        return dict(self.instr.instr.raw.vex)
+
+    @property
+    def evex(self) -> Dict:
+        return dict(self.instr.instr.raw.evex)
+
+    @property
+    def mvex(self) -> Dict:
+        return dict(self.instr.instr.raw.mvex)
+
+    @property
+    def modrm(self) -> Dict:
+        return dict(self.instr.instr.raw.modrm)
+
+    @property
+    def sib(self) -> Dict:
+        return dict(self.instr.instr.raw.sib)
+
+    @property
+    def disp(self) -> Dict:
+        return dict(self.instr.instr.raw.disp)
+
+    @property
+    def imm1(self) -> Dict:
+        return dict(self.instr.instr.raw.imm[0])
+
+    @property
+    def imm2(self) -> Dict:
+        return dict(self.instr.instr.raw.imm[1])
+
+
 @cython.final
 @cython.freelist(16)
 cdef class DecodedInstruction:
@@ -380,9 +435,9 @@ cdef class DecodedInstruction:
     def avx(self):
         return dict(self.instr.avx)
 
-    # @property
-    # def raw(self):
-    #     return dict(self.instr.raw)
+    @property
+    def raw(self):
+        return DecodedInstructionRaw(self)
 
     def __str__(self) -> str:
         return STATIC_FORMATTER.format_instr(self)
@@ -419,6 +474,9 @@ cdef class Decoder:
         ))
 
     cpdef DecodedInstruction decode_one(self, bytes data):
+        """
+        Decode a single instruction, returning a `DecodedInstruction` struct.
+        """
         cdef DecodedInstruction instr = DecodedInstruction()
         raise_if_err(ZydisDecoderDecodeBuffer(
             &self.decoder,
