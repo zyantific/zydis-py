@@ -1,2 +1,4 @@
 # zydis-py
-Zydis Python Bindings
+Zydis Python bindings using Cython.
+
+**This is still heavily in development. Expect bugs and missing features!**
