@@ -1,11 +1,13 @@
-# THIS FILE IS AUTO-GENERATED USING utils/genenums.py!
+# THIS FILE IS AUTO-GENERATED USING zydis-bindgen!
 # distutils: language=3
 # distutils: include_dirs=ZYDIS_INCLUDES
 
 from enum import IntEnum
 from .cenums cimport *
 
+
 class InstructionCategory(IntEnum):
+    """Defines the `ZydisInstructionCategory` enum."""
     INVALID = ZYDIS_CATEGORY_INVALID
     ADOX_ADCX = ZYDIS_CATEGORY_ADOX_ADCX
     AES = ZYDIS_CATEGORY_AES
@@ -102,9 +104,12 @@ class InstructionCategory(IntEnum):
     XOP = ZYDIS_CATEGORY_XOP
     XSAVE = ZYDIS_CATEGORY_XSAVE
     XSAVEOPT = ZYDIS_CATEGORY_XSAVEOPT
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_CATEGORY_MAX_VALUE
 
+
 class ISASet(IntEnum):
+    """Defines the `ZydisISASet` enum."""
     INVALID = ZYDIS_ISA_SET_INVALID
     ADOX_ADCX = ZYDIS_ISA_SET_ADOX_ADCX
     AES = ZYDIS_ISA_SET_AES
@@ -260,9 +265,12 @@ class ISASet(IntEnum):
     XSAVEC = ZYDIS_ISA_SET_XSAVEC
     XSAVEOPT = ZYDIS_ISA_SET_XSAVEOPT
     XSAVES = ZYDIS_ISA_SET_XSAVES
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_ISA_SET_MAX_VALUE
 
+
 class ISAExt(IntEnum):
+    """Defines the `ZydisISAExt` enum."""
     INVALID = ZYDIS_ISA_EXT_INVALID
     ADOX_ADCX = ZYDIS_ISA_EXT_ADOX_ADCX
     AES = ZYDIS_ISA_EXT_AES
@@ -335,9 +343,12 @@ class ISAExt(IntEnum):
     XSAVEC = ZYDIS_ISA_EXT_XSAVEC
     XSAVEOPT = ZYDIS_ISA_EXT_XSAVEOPT
     XSAVES = ZYDIS_ISA_EXT_XSAVES
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_ISA_EXT_MAX_VALUE
 
+
 class Mnemonic(IntEnum):
+    """Defines the `ZydisMnemonic` enum."""
     INVALID = ZYDIS_MNEMONIC_INVALID
     AAA = ZYDIS_MNEMONIC_AAA
     AAD = ZYDIS_MNEMONIC_AAD
@@ -1936,45 +1947,80 @@ class Mnemonic(IntEnum):
     XSHA256 = ZYDIS_MNEMONIC_XSHA256
     XSTORE = ZYDIS_MNEMONIC_XSTORE
     XTEST = ZYDIS_MNEMONIC_XTEST
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_MNEMONIC_MAX_VALUE
 
+
 class MachineMode(IntEnum):
+    """Defines the `ZydisMachineMode` enum."""
+    # 64 bit mode.
     LONG_64 = ZYDIS_MACHINE_MODE_LONG_64
+    # 32 bit protected mode.
     LONG_COMPAT_32 = ZYDIS_MACHINE_MODE_LONG_COMPAT_32
+    # 16 bit protected mode.
     LONG_COMPAT_16 = ZYDIS_MACHINE_MODE_LONG_COMPAT_16
+    # 32 bit protected mode.
     LEGACY_32 = ZYDIS_MACHINE_MODE_LEGACY_32
+    # 16 bit protected mode.
     LEGACY_16 = ZYDIS_MACHINE_MODE_LEGACY_16
+    # 16 bit real mode.
     REAL_16 = ZYDIS_MACHINE_MODE_REAL_16
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_MACHINE_MODE_MAX_VALUE
 
+
 class AddressWidth(IntEnum):
+    """Defines the `ZydisAddressWidth` enum."""
     _16 = ZYDIS_ADDRESS_WIDTH_16
     _32 = ZYDIS_ADDRESS_WIDTH_32
     _64 = ZYDIS_ADDRESS_WIDTH_64
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_ADDRESS_WIDTH_MAX_VALUE
 
+
 class ElementType(IntEnum):
+    """Defines the `ZydisElementType` enum."""
     INVALID = ZYDIS_ELEMENT_TYPE_INVALID
+    # A struct type.
     STRUCT = ZYDIS_ELEMENT_TYPE_STRUCT
+    # Unsigned integer value.
     UINT = ZYDIS_ELEMENT_TYPE_UINT
+    # Signed integer value.
     INT = ZYDIS_ELEMENT_TYPE_INT
+    # 16-bit floating point value (`half`).
     FLOAT16 = ZYDIS_ELEMENT_TYPE_FLOAT16
+    # 32-bit floating point value (`single`).
     FLOAT32 = ZYDIS_ELEMENT_TYPE_FLOAT32
+    # 64-bit floating point value (`double`).
     FLOAT64 = ZYDIS_ELEMENT_TYPE_FLOAT64
+    # 80-bit floating point value (`extended`).
     FLOAT80 = ZYDIS_ELEMENT_TYPE_FLOAT80
+    # Binary coded decimal value.
     LONGBCD = ZYDIS_ELEMENT_TYPE_LONGBCD
+    # A condition code (e.g. used by `CMPPD`, `VCMPPD`, ...).
     CC = ZYDIS_ELEMENT_TYPE_CC
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_ELEMENT_TYPE_MAX_VALUE
 
+
 class OperandType(IntEnum):
+    """Defines the `ZydisOperandType` enum."""
+    # The operand is not used.
     UNUSED = ZYDIS_OPERAND_TYPE_UNUSED
+    # The operand is a register operand.
     REGISTER = ZYDIS_OPERAND_TYPE_REGISTER
+    # The operand is a memory operand.
     MEMORY = ZYDIS_OPERAND_TYPE_MEMORY
+    # The operand is a pointer operand with a segment:offset lvalue.
     POINTER = ZYDIS_OPERAND_TYPE_POINTER
+    # The operand is an immediate operand.
     IMMEDIATE = ZYDIS_OPERAND_TYPE_IMMEDIATE
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_OPERAND_TYPE_MAX_VALUE
 
+
 class OperandEncoding(IntEnum):
+    """Defines the `ZydisOperandEncoding` enum."""
     NONE = ZYDIS_OPERAND_ENCODING_NONE
     MODRM_REG = ZYDIS_OPERAND_ENCODING_MODRM_REG
     MODRM_RM = ZYDIS_OPERAND_ENCODING_MODRM_RM
@@ -2010,37 +2056,67 @@ class OperandEncoding(IntEnum):
     JIMM16_32_64 = ZYDIS_OPERAND_ENCODING_JIMM16_32_64
     JIMM32_32_64 = ZYDIS_OPERAND_ENCODING_JIMM32_32_64
     JIMM16_32_32 = ZYDIS_OPERAND_ENCODING_JIMM16_32_32
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_OPERAND_ENCODING_MAX_VALUE
 
+
 class OperandVisibility(IntEnum):
+    """Defines the `ZydisOperandVisibility` enum."""
     INVALID = ZYDIS_OPERAND_VISIBILITY_INVALID
+    # The operand is explicitly encoded in the instruction.
     EXPLICIT = ZYDIS_OPERAND_VISIBILITY_EXPLICIT
+    # The operand is part of the opcode, but listed as an operand.
     IMPLICIT = ZYDIS_OPERAND_VISIBILITY_IMPLICIT
+    # The operand is part of the opcode, and not typically listed as an operand.
     HIDDEN = ZYDIS_OPERAND_VISIBILITY_HIDDEN
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_OPERAND_VISIBILITY_MAX_VALUE
 
+
 class OperandAction(IntEnum):
+    """Defines the `ZydisOperandAction` enum."""
+    # The operand is read by the instruction.
     READ = ZYDIS_OPERAND_ACTION_READ
+    # The operand is written by the instruction (must write).
     WRITE = ZYDIS_OPERAND_ACTION_WRITE
+    # The operand is conditionally read by the instruction.
     CONDREAD = ZYDIS_OPERAND_ACTION_CONDREAD
+    # The operand is conditionally written by the instruction (may write).
     CONDWRITE = ZYDIS_OPERAND_ACTION_CONDWRITE
+    # The operand is read (must read) and written by the instruction (must write).
     READWRITE = ZYDIS_OPERAND_ACTION_READWRITE
+    # The operand is conditionally read (may read) and conditionally written by the instruction (may write).
     CONDREAD_CONDWRITE = ZYDIS_OPERAND_ACTION_CONDREAD_CONDWRITE
+    # The operand is read (must read) and conditionally written by the instruction (may write).
     READ_CONDWRITE = ZYDIS_OPERAND_ACTION_READ_CONDWRITE
+    # The operand is written (must write) and conditionally read by the instruction (may read).
     CONDREAD_WRITE = ZYDIS_OPERAND_ACTION_CONDREAD_WRITE
+    # Mask combining all reading access flags.
     MASK_READ = ZYDIS_OPERAND_ACTION_MASK_READ
+    # Mask combining all writing access flags.
     MASK_WRITE = ZYDIS_OPERAND_ACTION_MASK_WRITE
 
+
 class InstructionEncoding(IntEnum):
+    """Defines the `ZydisInstructionEncoding` enum."""
+    # The instruction uses the legacy encoding.
     LEGACY = ZYDIS_INSTRUCTION_ENCODING_LEGACY
+    # The instruction uses the AMD 3DNow-encoding.
     _3DNOW = ZYDIS_INSTRUCTION_ENCODING_3DNOW
+    # The instruction uses the AMD XOP-encoding.
     XOP = ZYDIS_INSTRUCTION_ENCODING_XOP
+    # The instruction uses the VEX-encoding.
     VEX = ZYDIS_INSTRUCTION_ENCODING_VEX
+    # The instruction uses the EVEX-encoding.
     EVEX = ZYDIS_INSTRUCTION_ENCODING_EVEX
+    # The instruction uses the MVEX-encoding.
     MVEX = ZYDIS_INSTRUCTION_ENCODING_MVEX
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_INSTRUCTION_ENCODING_MAX_VALUE
 
+
 class OpcodeMap(IntEnum):
+    """Defines the `ZydisOpcodeMap` enum."""
     DEFAULT = ZYDIS_OPCODE_MAP_DEFAULT
     _0F = ZYDIS_OPCODE_MAP_0F
     _0F38 = ZYDIS_OPCODE_MAP_0F38
@@ -2049,9 +2125,12 @@ class OpcodeMap(IntEnum):
     XOP8 = ZYDIS_OPCODE_MAP_XOP8
     XOP9 = ZYDIS_OPCODE_MAP_XOP9
     XOPA = ZYDIS_OPCODE_MAP_XOPA
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_OPCODE_MAP_MAX_VALUE
 
+
 class Register(IntEnum):
+    """Defines the `ZydisRegister` enum."""
     NONE = ZYDIS_REGISTER_NONE
     AL = ZYDIS_REGISTER_AL
     CL = ZYDIS_REGISTER_CL
@@ -2309,78 +2388,148 @@ class Register(IntEnum):
     MXCSR = ZYDIS_REGISTER_MXCSR
     PKRU = ZYDIS_REGISTER_PKRU
     XCR0 = ZYDIS_REGISTER_XCR0
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_REGISTER_MAX_VALUE
 
+
 class RegisterClass(IntEnum):
+    """Defines the `ZydisRegisterClass` enum."""
     INVALID = ZYDIS_REGCLASS_INVALID
+    # 8-bit general-purpose registers.
     GPR8 = ZYDIS_REGCLASS_GPR8
+    # 16-bit general-purpose registers.
     GPR16 = ZYDIS_REGCLASS_GPR16
+    # 32-bit general-purpose registers.
     GPR32 = ZYDIS_REGCLASS_GPR32
+    # 64-bit general-purpose registers.
     GPR64 = ZYDIS_REGCLASS_GPR64
+    # Floating point legacy registers.
     X87 = ZYDIS_REGCLASS_X87
+    # Floating point multimedia registers.
     MMX = ZYDIS_REGCLASS_MMX
+    # 128-bit vector registers.
     XMM = ZYDIS_REGCLASS_XMM
+    # 256-bit vector registers.
     YMM = ZYDIS_REGCLASS_YMM
+    # 512-bit vector registers.
     ZMM = ZYDIS_REGCLASS_ZMM
+    # Flags registers.
     FLAGS = ZYDIS_REGCLASS_FLAGS
+    # Instruction-pointer registers.
     IP = ZYDIS_REGCLASS_IP
+    # Segment registers.
     SEGMENT = ZYDIS_REGCLASS_SEGMENT
+    # Test registers.
     TEST = ZYDIS_REGCLASS_TEST
+    # Control registers.
     CONTROL = ZYDIS_REGCLASS_CONTROL
+    # Debug registers.
     DEBUG = ZYDIS_REGCLASS_DEBUG
+    # Mask registers.
     MASK = ZYDIS_REGCLASS_MASK
+    # Bound registers.
     BOUND = ZYDIS_REGCLASS_BOUND
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_REGCLASS_MAX_VALUE
 
+
 class MemoryOperandType(IntEnum):
+    """Defines the `ZydisMemoryOperandType` enum."""
     INVALID = ZYDIS_MEMOP_TYPE_INVALID
+    # Normal memory operand.
     MEM = ZYDIS_MEMOP_TYPE_MEM
+    # The memory operand is only used for address-generation. No real memory-access is caused.
     AGEN = ZYDIS_MEMOP_TYPE_AGEN
+    # A memory operand using `SIB` addressing form, where the index register is not used in address calculation and scale is ignored. No real memory-access is caused.
     MIB = ZYDIS_MEMOP_TYPE_MIB
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_MEMOP_TYPE_MAX_VALUE
 
+
 class CPUFlag(IntEnum):
+    """Defines the `ZydisCPUFlag` enum."""
+    # Carry flag.
     CF = ZYDIS_CPUFLAG_CF
+    # Parity flag.
     PF = ZYDIS_CPUFLAG_PF
+    # Adjust flag.
     AF = ZYDIS_CPUFLAG_AF
+    # Zero flag.
     ZF = ZYDIS_CPUFLAG_ZF
+    # Sign flag.
     SF = ZYDIS_CPUFLAG_SF
+    # Trap flag.
     TF = ZYDIS_CPUFLAG_TF
+    # Interrupt enable flag.
     _IF = ZYDIS_CPUFLAG_IF
+    # Direction flag.
     DF = ZYDIS_CPUFLAG_DF
+    # Overflow flag.
     OF = ZYDIS_CPUFLAG_OF
+    # I/O privilege level flag.
     IOPL = ZYDIS_CPUFLAG_IOPL
+    # Nested task flag.
     NT = ZYDIS_CPUFLAG_NT
+    # Resume flag.
     RF = ZYDIS_CPUFLAG_RF
+    # Virtual 8086 mode flag.
     VM = ZYDIS_CPUFLAG_VM
+    # Alignment check.
     AC = ZYDIS_CPUFLAG_AC
+    # Virtual interrupt flag.
     VIF = ZYDIS_CPUFLAG_VIF
+    # Virtual interrupt pending.
     VIP = ZYDIS_CPUFLAG_VIP
+    # Able to use CPUID instruction.
     ID = ZYDIS_CPUFLAG_ID
+    # FPU condition-code flag 0.
     C0 = ZYDIS_CPUFLAG_C0
+    # FPU condition-code flag 1.
     C1 = ZYDIS_CPUFLAG_C1
+    # FPU condition-code flag 2.
     C2 = ZYDIS_CPUFLAG_C2
+    # FPU condition-code flag 3.
     C3 = ZYDIS_CPUFLAG_C3
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_CPUFLAG_MAX_VALUE
 
+
 class CPUFlagAction(IntEnum):
+    """Defines the `ZydisCPUFlagAction` enum."""
+    # The CPU flag is not touched by the instruction.
     NONE = ZYDIS_CPUFLAG_ACTION_NONE
+    # The CPU flag is tested (read).
     TESTED = ZYDIS_CPUFLAG_ACTION_TESTED
+    # The CPU flag is tested and modified aferwards (read-write).
     TESTED_MODIFIED = ZYDIS_CPUFLAG_ACTION_TESTED_MODIFIED
+    # The CPU flag is modified (write).
     MODIFIED = ZYDIS_CPUFLAG_ACTION_MODIFIED
+    # The CPU flag is set to 0 (write).
     SET_0 = ZYDIS_CPUFLAG_ACTION_SET_0
+    # The CPU flag is set to 1 (write).
     SET_1 = ZYDIS_CPUFLAG_ACTION_SET_1
+    # The CPU flag is undefined (write).
     UNDEFINED = ZYDIS_CPUFLAG_ACTION_UNDEFINED
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_CPUFLAG_ACTION_MAX_VALUE
 
+
 class BranchType(IntEnum):
+    """Defines the `ZydisBranchType` enum."""
+    # The instruction is not a branch instruction.
     NONE = ZYDIS_BRANCH_TYPE_NONE
+    # The instruction is a short (8-bit) branch instruction.
     SHORT = ZYDIS_BRANCH_TYPE_SHORT
+    # The instruction is a near (16-bit or 32-bit) branch instruction.
     NEAR = ZYDIS_BRANCH_TYPE_NEAR
+    # The instruction is a far (intersegment) branch instruction.
     FAR = ZYDIS_BRANCH_TYPE_FAR
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_BRANCH_TYPE_MAX_VALUE
 
+
 class ExceptionClass(IntEnum):
+    """Defines the `ZydisExceptionClass` enum."""
     NONE = ZYDIS_EXCEPTION_CLASS_NONE
     SSE1 = ZYDIS_EXCEPTION_CLASS_SSE1
     SSE2 = ZYDIS_EXCEPTION_CLASS_SSE2
@@ -2421,18 +2570,29 @@ class ExceptionClass(IntEnum):
     E12NP = ZYDIS_EXCEPTION_CLASS_E12NP
     K20 = ZYDIS_EXCEPTION_CLASS_K20
     K21 = ZYDIS_EXCEPTION_CLASS_K21
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_EXCEPTION_CLASS_MAX_VALUE
 
+
 class MaskMode(IntEnum):
+    """Defines the `ZydisMaskMode` enum."""
     INVALID = ZYDIS_MASK_MODE_INVALID
+    # Masking is disabled for the current instruction (`K0` register is used).
     DISABLED = ZYDIS_MASK_MODE_DISABLED
+    # The embedded mask register is used as a merge-mask.
     MERGING = ZYDIS_MASK_MODE_MERGING
+    # The embedded mask register is used as a zero-mask.
     ZEROING = ZYDIS_MASK_MODE_ZEROING
+    # The embedded mask register is used as a control-mask (element selector).
     CONTROL = ZYDIS_MASK_MODE_CONTROL
+    # The embedded mask register is used as a zeroing control-mask (element selector).
     CONTROL_ZEROING = ZYDIS_MASK_MODE_CONTROL_ZEROING
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_MASK_MODE_MAX_VALUE
 
+
 class BroadcastMode(IntEnum):
+    """Defines the `ZydisBroadcastMode` enum."""
     INVALID = ZYDIS_BROADCAST_MODE_INVALID
     _1_TO_2 = ZYDIS_BROADCAST_MODE_1_TO_2
     _1_TO_4 = ZYDIS_BROADCAST_MODE_1_TO_4
@@ -2446,17 +2606,27 @@ class BroadcastMode(IntEnum):
     _4_TO_8 = ZYDIS_BROADCAST_MODE_4_TO_8
     _4_TO_16 = ZYDIS_BROADCAST_MODE_4_TO_16
     _8_TO_16 = ZYDIS_BROADCAST_MODE_8_TO_16
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_BROADCAST_MODE_MAX_VALUE
 
+
 class RoundingMode(IntEnum):
+    """Defines the `ZydisRoundingMode` enum."""
     INVALID = ZYDIS_ROUNDING_MODE_INVALID
+    # Round to nearest.
     RN = ZYDIS_ROUNDING_MODE_RN
+    # Round down.
     RD = ZYDIS_ROUNDING_MODE_RD
+    # Round up.
     RU = ZYDIS_ROUNDING_MODE_RU
+    # Round towards zero.
     RZ = ZYDIS_ROUNDING_MODE_RZ
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_ROUNDING_MODE_MAX_VALUE
 
+
 class SwizzleMode(IntEnum):
+    """Defines the `ZydisSwizzleMode` enum."""
     INVALID = ZYDIS_SWIZZLE_MODE_INVALID
     DCBA = ZYDIS_SWIZZLE_MODE_DCBA
     CDAB = ZYDIS_SWIZZLE_MODE_CDAB
@@ -2466,136 +2636,259 @@ class SwizzleMode(IntEnum):
     BBBB = ZYDIS_SWIZZLE_MODE_BBBB
     CCCC = ZYDIS_SWIZZLE_MODE_CCCC
     DDDD = ZYDIS_SWIZZLE_MODE_DDDD
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_SWIZZLE_MODE_MAX_VALUE
 
+
 class ConversionMode(IntEnum):
+    """Defines the `ZydisConversionMode` enum."""
     INVALID = ZYDIS_CONVERSION_MODE_INVALID
     FLOAT16 = ZYDIS_CONVERSION_MODE_FLOAT16
     SINT8 = ZYDIS_CONVERSION_MODE_SINT8
     UINT8 = ZYDIS_CONVERSION_MODE_UINT8
     SINT16 = ZYDIS_CONVERSION_MODE_SINT16
     UINT16 = ZYDIS_CONVERSION_MODE_UINT16
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_CONVERSION_MODE_MAX_VALUE
 
+
 class PrefixType(IntEnum):
+    """Defines the `ZydisPrefixType` enum."""
+    # The prefix is ignored by the instruction.
     IGNORED = ZYDIS_PREFIX_TYPE_IGNORED
+    # The prefix is effectively used by the instruction.
     EFFECTIVE = ZYDIS_PREFIX_TYPE_EFFECTIVE
+    # The prefix is used as a mandatory prefix.
     MANDATORY = ZYDIS_PREFIX_TYPE_MANDATORY
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_PREFIX_TYPE_MAX_VALUE
 
+
 class DecoderMode(IntEnum):
+    """Defines the `ZydisDecoderMode` enum."""
+    # Enables minimal instruction decoding without semantic analysis.
     MINIMAL = ZYDIS_DECODER_MODE_MINIMAL
+    # Enables the `AMD`-branch mode.
     AMD_BRANCHES = ZYDIS_DECODER_MODE_AMD_BRANCHES
+    # Enables `KNC` compatibility-mode.
     KNC = ZYDIS_DECODER_MODE_KNC
+    # Enables the `MPX` mode.
     MPX = ZYDIS_DECODER_MODE_MPX
+    # Enables the `CET` mode.
     CET = ZYDIS_DECODER_MODE_CET
+    # Enables the `LZCNT` mode.
     LZCNT = ZYDIS_DECODER_MODE_LZCNT
+    # Enables the `TZCNT` mode.
     TZCNT = ZYDIS_DECODER_MODE_TZCNT
+    # Enables the `WBNOINVD` mode.
     WBNOINVD = ZYDIS_DECODER_MODE_WBNOINVD
+    # Enables the `CLDEMOTE` mode.
     CLDEMOTE = ZYDIS_DECODER_MODE_CLDEMOTE
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_DECODER_MODE_MAX_VALUE
 
+
 class FormatterStyle(IntEnum):
+    """Defines the `ZydisFormatterStyle` enum."""
+    # Generates `AT&T`-style disassembly.
     ATT = ZYDIS_FORMATTER_STYLE_ATT
+    # Generates `Intel`-style disassembly.
     INTEL = ZYDIS_FORMATTER_STYLE_INTEL
+    # Generates `MASM`-style disassembly that is directly accepted as input for the `MASM` assembler.
     INTEL_MASM = ZYDIS_FORMATTER_STYLE_INTEL_MASM
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_FORMATTER_STYLE_MAX_VALUE
 
+
 class FormatterProperty(IntEnum):
+    """Defines the `ZydisFormatterProperty` enum."""
+    # Controls the printing of effective operand-size suffixes (`AT&T`) or operand-sizes of memory operands (`INTEL`).
     FORCE_SIZE = ZYDIS_FORMATTER_PROP_FORCE_SIZE
+    # Controls the printing of segment prefixes.
     FORCE_SEGMENT = ZYDIS_FORMATTER_PROP_FORCE_SEGMENT
+    # Controls the printing of branch addresses.
     FORCE_RELATIVE_BRANCHES = ZYDIS_FORMATTER_PROP_FORCE_RELATIVE_BRANCHES
+    # Controls the printing of `EIP`/`RIP`-relative addresses.
     FORCE_RELATIVE_RIPREL = ZYDIS_FORMATTER_PROP_FORCE_RELATIVE_RIPREL
+    # Controls the printing of branch-instructions sizes.
     PRINT_BRANCH_SIZE = ZYDIS_FORMATTER_PROP_PRINT_BRANCH_SIZE
+    # Controls the printing of instruction prefixes.
     DETAILED_PREFIXES = ZYDIS_FORMATTER_PROP_DETAILED_PREFIXES
+    # Controls the base of address values.
     ADDR_BASE = ZYDIS_FORMATTER_PROP_ADDR_BASE
+    # Controls the signedness of relative addresses. Absolute addresses are always unsigned.
     ADDR_SIGNEDNESS = ZYDIS_FORMATTER_PROP_ADDR_SIGNEDNESS
+    # Controls the padding of absolute address values.
     ADDR_PADDING_ABSOLUTE = ZYDIS_FORMATTER_PROP_ADDR_PADDING_ABSOLUTE
+    # Controls the padding of relative address values.
     ADDR_PADDING_RELATIVE = ZYDIS_FORMATTER_PROP_ADDR_PADDING_RELATIVE
+    # Controls the base of displacement values.
     DISP_BASE = ZYDIS_FORMATTER_PROP_DISP_BASE
+    # Controls the signedness of displacement values.
     DISP_SIGNEDNESS = ZYDIS_FORMATTER_PROP_DISP_SIGNEDNESS
+    # Controls the padding of displacement values.
     DISP_PADDING = ZYDIS_FORMATTER_PROP_DISP_PADDING
+    # Controls the base of immediate values.
     IMM_BASE = ZYDIS_FORMATTER_PROP_IMM_BASE
+    # Controls the signedness of immediate values.
     IMM_SIGNEDNESS = ZYDIS_FORMATTER_PROP_IMM_SIGNEDNESS
+    # Controls the padding of immediate values.
     IMM_PADDING = ZYDIS_FORMATTER_PROP_IMM_PADDING
+    # Controls the letter-case for prefixes.
     UPPERCASE_PREFIXES = ZYDIS_FORMATTER_PROP_UPPERCASE_PREFIXES
+    # Controls the letter-case for the mnemonic.
     UPPERCASE_MNEMONIC = ZYDIS_FORMATTER_PROP_UPPERCASE_MNEMONIC
+    # Controls the letter-case for registers.
     UPPERCASE_REGISTERS = ZYDIS_FORMATTER_PROP_UPPERCASE_REGISTERS
+    # Controls the letter-case for typecasts.
     UPPERCASE_TYPECASTS = ZYDIS_FORMATTER_PROP_UPPERCASE_TYPECASTS
+    # Controls the letter-case for decorators.
     UPPERCASE_DECORATORS = ZYDIS_FORMATTER_PROP_UPPERCASE_DECORATORS
+    # Controls the prefix for decimal values.
     DEC_PREFIX = ZYDIS_FORMATTER_PROP_DEC_PREFIX
+    # Controls the suffix for decimal values.
     DEC_SUFFIX = ZYDIS_FORMATTER_PROP_DEC_SUFFIX
+    # Controls the letter-case of hexadecimal values.
     HEX_UPPERCASE = ZYDIS_FORMATTER_PROP_HEX_UPPERCASE
+    # Controls the prefix for hexadecimal values.
     HEX_PREFIX = ZYDIS_FORMATTER_PROP_HEX_PREFIX
+    # Controls the suffix for hexadecimal values.
     HEX_SUFFIX = ZYDIS_FORMATTER_PROP_HEX_SUFFIX
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_FORMATTER_PROP_MAX_VALUE
 
+
 class NumericBase(IntEnum):
+    """Defines the `ZydisNumericBase` enum."""
+    # Decimal system.
     DEC = ZYDIS_NUMERIC_BASE_DEC
+    # Hexadecimal system.
     HEX = ZYDIS_NUMERIC_BASE_HEX
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_NUMERIC_BASE_MAX_VALUE
 
+
 class Signedness(IntEnum):
+    """Defines the `ZydisSignedness` enum."""
+    # Automatically choose the most suitable mode based on the operands `ZydisDecodedOperand.imm.is_signed` attribute.
     AUTO = ZYDIS_SIGNEDNESS_AUTO
+    # Force signed values.
     SIGNED = ZYDIS_SIGNEDNESS_SIGNED
+    # Force unsigned values.
     UNSIGNED = ZYDIS_SIGNEDNESS_UNSIGNED
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_SIGNEDNESS_MAX_VALUE
 
+
 class Padding(IntEnum):
+    """Defines the `ZydisPadding` enum."""
+    # Disables padding.
     DISABLED = ZYDIS_PADDING_DISABLED
+    # Padds the value to the current stack-width for addresses, or to the operand-width for immediate values (hexadecimal only).
     AUTO = ZYDIS_PADDING_AUTO
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_PADDING_MAX_VALUE
 
+
 class FormatterFunction(IntEnum):
+    """Defines the `ZydisFormatterFunction` enum."""
+    # This function is invoked before the formatter formats an instruction.
     PRE_INSTRUCTION = ZYDIS_FORMATTER_FUNC_PRE_INSTRUCTION
+    # This function is invoked after the formatter formatted an instruction.
     POST_INSTRUCTION = ZYDIS_FORMATTER_FUNC_POST_INSTRUCTION
+    # This function refers to the main formatting function.
     FORMAT_INSTRUCTION = ZYDIS_FORMATTER_FUNC_FORMAT_INSTRUCTION
+    # This function is invoked before the formatter formats an operand.
     PRE_OPERAND = ZYDIS_FORMATTER_FUNC_PRE_OPERAND
+    # This function is invoked after the formatter formatted an operand.
     POST_OPERAND = ZYDIS_FORMATTER_FUNC_POST_OPERAND
+    # This function is invoked to format a register operand.
     FORMAT_OPERAND_REG = ZYDIS_FORMATTER_FUNC_FORMAT_OPERAND_REG
+    # This function is invoked to format a memory operand.
     FORMAT_OPERAND_MEM = ZYDIS_FORMATTER_FUNC_FORMAT_OPERAND_MEM
+    # This function is invoked to format a pointer operand.
     FORMAT_OPERAND_PTR = ZYDIS_FORMATTER_FUNC_FORMAT_OPERAND_PTR
+    # This function is invoked to format an immediate operand.
     FORMAT_OPERAND_IMM = ZYDIS_FORMATTER_FUNC_FORMAT_OPERAND_IMM
+    # This function is invoked to print the instruction mnemonic.
     PRINT_MNEMONIC = ZYDIS_FORMATTER_FUNC_PRINT_MNEMONIC
+    # This function is invoked to print a register.
     PRINT_REGISTER = ZYDIS_FORMATTER_FUNC_PRINT_REGISTER
+    # This function is invoked to print absolute addresses.
     PRINT_ADDRESS_ABS = ZYDIS_FORMATTER_FUNC_PRINT_ADDRESS_ABS
+    # This function is invoked to print relative addresses.
     PRINT_ADDRESS_REL = ZYDIS_FORMATTER_FUNC_PRINT_ADDRESS_REL
+    # This function is invoked to print a memory displacement value.
     PRINT_DISP = ZYDIS_FORMATTER_FUNC_PRINT_DISP
+    # This function is invoked to print an immediate value.
     PRINT_IMM = ZYDIS_FORMATTER_FUNC_PRINT_IMM
+    # This function is invoked to print the size of a memory operand (`INTEL` only).
     PRINT_TYPECAST = ZYDIS_FORMATTER_FUNC_PRINT_TYPECAST
+    # This function is invoked to print the segment-register of a memory operand.
     PRINT_SEGMENT = ZYDIS_FORMATTER_FUNC_PRINT_SEGMENT
+    # This function is invoked to print the instruction prefixes.
     PRINT_PREFIXES = ZYDIS_FORMATTER_FUNC_PRINT_PREFIXES
+    # This function is invoked after formatting an operand to print a `EVEX`/`MVEX` decorator.
     PRINT_DECORATOR = ZYDIS_FORMATTER_FUNC_PRINT_DECORATOR
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_FORMATTER_FUNC_MAX_VALUE
 
+
 class Decorator(IntEnum):
+    """Defines the `ZydisDecorator` enum."""
     INVALID = ZYDIS_DECORATOR_INVALID
+    # The embedded-mask decorator.
     MASK = ZYDIS_DECORATOR_MASK
+    # The broadcast decorator.
     BC = ZYDIS_DECORATOR_BC
+    # The rounding-control decorator.
     RC = ZYDIS_DECORATOR_RC
+    # The suppress-all-exceptions decorator.
     SAE = ZYDIS_DECORATOR_SAE
+    # The register-swizzle decorator.
     SWIZZLE = ZYDIS_DECORATOR_SWIZZLE
+    # The conversion decorator.
     CONVERSION = ZYDIS_DECORATOR_CONVERSION
+    # The eviction-hint decorator.
     EH = ZYDIS_DECORATOR_EH
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_DECORATOR_MAX_VALUE
 
+
 class InstructionSegment(IntEnum):
+    """Defines the `ZydisInstructionSegment` struct."""
     NONE = ZYDIS_INSTR_SEGMENT_NONE
+    # The legacy prefixes (including ignored `REX` prefixes).
     PREFIXES = ZYDIS_INSTR_SEGMENT_PREFIXES
+    # The effective `REX` prefix byte.
     REX = ZYDIS_INSTR_SEGMENT_REX
+    # The `XOP` prefix bytes.
     XOP = ZYDIS_INSTR_SEGMENT_XOP
+    # The `VEX` prefix bytes.
     VEX = ZYDIS_INSTR_SEGMENT_VEX
+    # The `EVEX` prefix bytes.
     EVEX = ZYDIS_INSTR_SEGMENT_EVEX
+    # The `MVEX` prefix bytes.
     MVEX = ZYDIS_INSTR_SEGMENT_MVEX
+    # The opcode bytes.
     OPCODE = ZYDIS_INSTR_SEGMENT_OPCODE
+    # The `ModRM` byte.
     MODRM = ZYDIS_INSTR_SEGMENT_MODRM
+    # The `SIB` byte.
     SIB = ZYDIS_INSTR_SEGMENT_SIB
+    # The displacement bytes.
     DISPLACEMENT = ZYDIS_INSTR_SEGMENT_DISPLACEMENT
+    # The immediate bytes.
     IMMEDIATE = ZYDIS_INSTR_SEGMENT_IMMEDIATE
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_INSTR_SEGMENT_MAX_VALUE
 
+
 class Feature(IntEnum):
+    """Defines the `ZydisFeature` enum."""
     AVX512 = ZYDIS_FEATURE_AVX512
     KNC = ZYDIS_FEATURE_KNC
+    # Maximum value of this enum.
     MAX_VALUE = ZYDIS_FEATURE_MAX_VALUE
+
 

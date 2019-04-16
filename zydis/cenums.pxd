@@ -1,4 +1,4 @@
-# THIS FILE IS AUTO-GENERATED USING utils/genenums.py!
+# THIS FILE IS AUTO-GENERATED USING zydis-bindgen!
 
 cdef extern from "Zydis/Zydis.h":
     ctypedef enum ZydisInstructionCategory:
