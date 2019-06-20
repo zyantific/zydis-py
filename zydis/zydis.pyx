@@ -452,8 +452,8 @@ cdef class Decoder:
 
     def __cinit__(
         self,
-        machine_mode = MachineMode.LONG_64,
-        address_width = AddressWidth._64,
+        machine_mode=MachineMode.LONG_64,
+        address_width=AddressWidth._64,
     ):
         raise_if_err(ZydisDecoderInit(
             &self.decoder,
@@ -506,17 +506,21 @@ cdef class Formatter:
     """Formats `DecodedInstruction`s to human readable test."""
     cdef ZydisFormatter formatter
 
-    def __cinit__(self, style = FormatterStyle.INTEL):
+    def __cinit__(self, style=FormatterStyle.INTEL):
         raise_if_err(ZydisFormatterInit(&self.formatter, style))
 
-    cpdef str format_instr(self, DecodedInstruction instr):
+    cpdef str format_instr(
+        self,
+        DecodedInstruction instr,
+        ZyanU64 runtime_addr=0,
+    ):
         cdef char[256] buffer
         raise_if_err(ZydisFormatterFormatInstruction(
-            &self.formatter, &instr.instr, buffer, sizeof(buffer), 0
+            &self.formatter, &instr.instr, buffer, sizeof(buffer), runtime_addr
         ))
         return buffer.decode('utf8')
 
-    cpdef str format_operand(self, Operand operand):
+    cpdef str format_operand(self, Operand operand, ZyanU64 runtime_addr=0):
         cdef char[256] buffer
         raise_if_err(ZydisFormatterFormatOperand(
             &self.formatter,
@@ -524,7 +528,7 @@ cdef class Formatter:
             operand.index,
             buffer,
             sizeof(buffer),
-            0
+            runtime_addr,
         ))
         return buffer.decode('utf8')
 
@@ -539,18 +543,23 @@ cdef Formatter STATIC_FORMATTER = Formatter()
 def decode_and_format_all(
     bytes data,
     *,
-    Decoder decoder = STATIC_DECODER,
-    Formatter formatter = STATIC_FORMATTER,
+    ZyanU64 runtime_addr=0,
+    Decoder decoder=STATIC_DECODER,
+    Formatter formatter=STATIC_FORMATTER,
 ) -> Generator[Tuple[DecodedInstruction, str], None, None]:
     """
     Generator lazily decoding and formatting all instructions in the given
     bytes object, yielding `(DecodedInstruction, str)` pairs. `Decoder`
     and `Formatter` can be explicitly specified via the `decoder` /
     `formatter` arguments. If omitted, a shared decoder / formatter
-    (with default settings) is used.
+    (with default settings) is used. The `runtime_addr` is used to format
+    instructions with relative addressing, such as jumps or calls.
     """
-    for instr in decoder.decode_all(data):
-        yield instr, formatter.format_instr(instr)
+    for rt_addr, instr in enumerate(
+        decoder.decode_all(data), 
+        start=runtime_addr,
+    ):
+        yield instr, formatter.format_instr(instr, runtime_addr=rt_addr)
 
 
 # =========================================================================== #
