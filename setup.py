@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from setuptools import setup
 from glob import glob
 from distutils.command.build_clib import build_clib
@@ -18,10 +20,10 @@ ZYDIS_C = ('zydis', {
 
 setup(
     name='zydis-py',
-    version='3.0.0',
+    version='3.0.0a0',
     packages=['zydis'],
     libraries=[ZYDIS_C],
-    install_requires=['cython'],
+    install_requires=['cython<=0.30'],
     url='https://zydis.re',
     license='MIT',
     author='Joel Höner',
@@ -32,5 +34,6 @@ setup(
         glob('zydis/*.pyx'),
         aliases={'ZYDIS_INCLUDES': ZYDIS_INCLUDE_DIRS},
         build_dir='build',
+        language_level=3,
     ),
 )

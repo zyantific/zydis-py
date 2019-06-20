@@ -1,4 +1,3 @@
-# distutils: language=3
 # distutils: include_dirs=ZYDIS_INCLUDES
 
 from enum import IntFlag
