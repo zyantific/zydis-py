@@ -23,7 +23,7 @@ setup(
     version='3.0.0a0',
     packages=['zydis'],
     libraries=[ZYDIS_C],
-    install_requires=['cython<=0.30'],
+    install_requires=['Cython<=0.30'],
     url='https://zydis.re',
     license='MIT',
     author='Joel Höner',

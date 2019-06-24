@@ -423,12 +423,23 @@ cdef class DecodedInstruction:
         return {
             k
             for k, v in self.accessed_flags.items()
-            if v == CPUFlagAction.SET_1
+            if v in (CPUFlagAction.TESTED, CPUFlagAction.TESTED_MODIFIED)
         }
 
     @property
+    def written_flags(self) -> Set[CPUFlag]:
+        return self.accessed_flags.keys() - self.read_flags
+
+    @property
     def meta(self):
-        return dict(self.instr.meta)
+        meta = self.instr.meta
+        return {
+            'category': InstructionCategory(meta.category),
+            'isa_set': ISASet(meta.isa_set),
+            'isa_ext': ISAExt(meta.isa_ext),
+            'branch_type': BranchType(meta.branch_type),
+            'exception_class': ExceptionClass(meta.exception_class),
+        }
 
     @property
     def avx(self):

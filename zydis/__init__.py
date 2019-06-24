@@ -1,2 +1,2 @@
-from .zydis import *
-from .pyenums import *
+from zydis.zydis import *
+from zydis.pyenums import *
