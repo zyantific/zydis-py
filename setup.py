@@ -9,19 +9,18 @@ from distutils.extension import Extension
 
 CYTHON_MODULES = glob('zydis/*.pyx')
 
-ZYDIS_INCLUDE_DIRS = [os.path.abspath(x) for x in [
+ZYDIS_INCLUDE_DIRS = [
     './zydis-c/include',
     './zydis-c/src',
     './zydis-c/dependencies/zycore/include',
     './zydis-c/dependencies/zycore/src',
     './cfgheaders',
-]]
+]
 
 ZYDIS_C = ('zydis', {
     'include_dirs': ZYDIS_INCLUDE_DIRS,
     'sources': glob('zydis-c/src/*.c') + glob('zydis-c/dependencies/src/*.c'),
 })
-
 
 try:
     from Cython.Build import cythonize
