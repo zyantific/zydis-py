@@ -108,3 +108,4 @@ venv.bak/
 .vscode
 
 doc/_build/*
+zydis/*.c
