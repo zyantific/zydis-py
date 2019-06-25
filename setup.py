@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import setuptools
+import os
 from glob import glob
 from distutils.command.build_clib import build_clib
 from distutils.core import setup
@@ -8,13 +9,13 @@ from distutils.extension import Extension
 
 CYTHON_MODULES = glob('zydis/*.pyx')
 
-ZYDIS_INCLUDE_DIRS = [
+ZYDIS_INCLUDE_DIRS = [os.path.abspath(x) for x in [
     './zydis-c/include',
     './zydis-c/src',
     './zydis-c/dependencies/zycore/include',
     './zydis-c/dependencies/zycore/src',
     './cfgheaders',
-]
+]]
 
 ZYDIS_C = ('zydis', {
     'include_dirs': ZYDIS_INCLUDE_DIRS,
