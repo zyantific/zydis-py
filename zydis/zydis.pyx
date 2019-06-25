@@ -200,7 +200,7 @@ class Attribute(IntFlag):
 
 @cython.freelist(16)
 cdef class Operand:
-    """Instruction operand, such as `eax` or `[rbp+0x30]`."""
+    """Instruction operand, such as :code:`eax` or :code:`[rbp+0x30]`."""
     cdef DecodedInstruction instr
     cdef int index
 
@@ -219,14 +219,14 @@ cdef class Operand:
 
 
 cdef class RegOperand(Operand):
-    """Register operand, such as `rax`."""
+    """Register operand, such as :code:`rax`."""
     @property
     def register(self) -> Register:
         return Register(self._get_op().reg.value)
 
 
 cdef class MemOperand(Operand):
-    """Memory operand, such as `[rbp+30]`."""
+    """Memory operand, such as :code:`[rbp+30]`."""
     @property
     def type(self) -> MemoryOperandType:
         return MemoryOperandType(self._get_op().mem.type)
@@ -266,7 +266,7 @@ cdef class PtrOperand(Operand):
 
 
 cdef class ImmOperand(Operand):
-    """Immediate operand, e.g. `0x1337`."""
+    """Immediate operand, e.g. :code:`0x1337`."""
     @property
     def is_signed(self) -> bool:
         return bool(self._get_op().imm.is_signed)
@@ -294,6 +294,7 @@ cdef dict OP_INIT_MAP = {
 
 
 cdef class DecodedInstructionRaw:
+    """Raw information about an instruction (byte-code information)."""
     cdef DecodedInstruction instr
 
     def __cinit__(self, DecodedInstruction instr):
@@ -473,6 +474,17 @@ cdef class Decoder:
         ))
 
     cpdef void enable_mode(self, mode, ZyanBool enabled):
+        """
+        En/disable decoder modes.
+
+        Please note that :code:`DecoderMode.MINIMAL` is currently not
+        supported by the Python bindings -- trying to use it will result
+        in an assertion error.
+
+        :param DecoderMode mode: The decoder mode to alter.
+        :param bool enabled: enable / disable.
+        """
+
         # Supporting minimal mode would require lots of checks
         # everywhere in order to assure no uninitialized memory is
         # accessed.
@@ -485,7 +497,13 @@ cdef class Decoder:
 
     cpdef DecodedInstruction decode_one(self, bytes data):
         """
-        Decode a single instruction, returning a `DecodedInstruction` struct.
+        Decode a single instruction, returning a
+        :class:`DecodedInstruction` struct.
+
+        :param bytes data: The data to decode, e.g. :code:`b"\xEB\xFE"`.
+        :returns DecodedInstruction: The decoded instruction.
+
+        :raises ZydisError: When the instruction is invalid or incomplete.
         """
         cdef DecodedInstruction instr = DecodedInstruction()
         raise_if_err(ZydisDecoderDecodeBuffer(
@@ -501,7 +519,13 @@ cdef class Decoder:
     ]:
         """
         Generator lazily decoding all instructions in the given bytes object,
-        yielding `DecodedInstruction` instances.
+        yielding :class:`~zydis.DecodedInstruction` instances.
+
+        :params bytes data: The data to decode, e.g. :code:`b"\xCC\xC3\xF1"`.
+        :returns: Generator yielding :class:`DecodedInstruction` instances.
+
+        :raises ZydisError: When the instruction is invalid, or the
+            trailing instruction is incomplete.
         """
         while len(data) != 0:
             instr = self.decode_one(data)
@@ -514,7 +538,7 @@ cdef class Decoder:
 
 @cython.final
 cdef class Formatter:
-    """Formats `DecodedInstruction`s to human readable test."""
+    """Formats :class:`~zydis.DecodedInstruction` to human readable test."""
     cdef ZydisFormatter formatter
 
     def __cinit__(self, style=FormatterStyle.INTEL):
@@ -525,6 +549,16 @@ cdef class Formatter:
         DecodedInstruction instr,
         ZyanU64 runtime_addr=0,
     ):
+        """
+        Format a previously decoded instruction to text.
+
+        :param DecodedInstruction instr: The instruction to be formatted.
+        :param int runtime_addr: The runtime address to assume for
+            formatting. This is used to calculate absolute addresses
+            for instructions that use relative addressing, e.g. most 
+            branch instructions (jumps, calls).
+        :returns: String containing the formatted instruction.
+        """
         cdef char[256] buffer
         raise_if_err(ZydisFormatterFormatInstruction(
             &self.formatter, &instr.instr, buffer, sizeof(buffer), runtime_addr
@@ -532,6 +566,16 @@ cdef class Formatter:
         return buffer.decode('utf8')
 
     cpdef str format_operand(self, Operand operand, ZyanU64 runtime_addr=0):
+        """
+        Format a single operand of a previously decoded instruction.
+    
+        :param Operand operand: The operand to format.
+        :param int runtime_addr: The runtime address to assume for
+            formatting. This is used to calculate absolute addresses
+            for instructions that use relative addressing, e.g. most 
+            branch instructions (jumps, calls).
+        :returns: String containing the formatted instruction.
+        """
         cdef char[256] buffer
         raise_if_err(ZydisFormatterFormatOperand(
             &self.formatter,
@@ -559,15 +603,29 @@ def decode_and_format_all(
     Formatter formatter=STATIC_FORMATTER,
 ) -> Generator[Tuple[DecodedInstruction, str], None, None]:
     """
-    Generator lazily decoding and formatting all instructions in the given
-    bytes object, yielding `(DecodedInstruction, str)` pairs. `Decoder`
-    and `Formatter` can be explicitly specified via the `decoder` /
-    `formatter` arguments. If omitted, a shared decoder / formatter
-    (with default settings) is used. The `runtime_addr` is used to format
-    instructions with relative addressing, such as jumps or calls.
+    Generator lazily decoding and formatting all instructions in the
+    given bytes object.
+
+    :param bytes data: The input data
+    :param int runtime_addr: Used to format instructions with relative
+        addressing, such as jumps or calls.
+    :param Decoder decoder: If given, use this decoder. Else, use shared
+        decoder initialized with default settings.
+    :param Formatter formatter: If given, use this formatter. Else, use
+        shared formatter initialized with default settings.
+
+    :returns: Generator yielding :code:`(DecodedInstruction, str)` pairs.
+
+    :Example:
+
+    >>> from zydis import decode_and_format_all
+    >>> for (insn, text) in decode_and_format_all(b'\xCC\xC3'):
+    >>>     print(f"Instruction length: {insn.length}, formatted: {text}")
+    Instruction length: 1, formatted: int3
+    Instruction length: 1, formatted: ret
     """
     for rt_addr, instr in enumerate(
-        decoder.decode_all(data), 
+        decoder.decode_all(data),
         start=runtime_addr,
     ):
         yield instr, formatter.format_instr(instr, runtime_addr=rt_addr)
