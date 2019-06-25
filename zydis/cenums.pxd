@@ -2591,6 +2591,8 @@ cdef extern from "Zydis/Zydis.h":
         ZYDIS_INSTR_SEGMENT_MAX_VALUE
 
     ctypedef enum ZydisFeature:
+        ZYDIS_FEATURE_DECODER
+        ZYDIS_FEATURE_FORMATTER
         ZYDIS_FEATURE_AVX512
         ZYDIS_FEATURE_KNC
         ZYDIS_FEATURE_MAX_VALUE

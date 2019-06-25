@@ -2,8 +2,6 @@
 # distutils: include_dirs=ZYDIS_INCLUDES
 
 from enum import IntEnum
-from .cenums cimport *
-
 
 class InstructionCategory(IntEnum):
     """Defines the `ZydisInstructionCategory` enum."""
