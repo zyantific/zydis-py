@@ -434,3 +434,15 @@ cdef extern from "Zydis/Zydis.h":
     )
 
 # =========================================================================== #
+# [Utils]                                                                     #
+# =========================================================================== #
+
+cdef extern from "Zydis/Zydis.h":
+    ZyanStatus ZydisCalcAbsoluteAddress(
+        const ZydisDecodedInstruction* instruction,
+        const ZydisDecodedOperand* operand,
+        ZyanU64 runtime_address,
+        ZyanU64* result_address,
+    )
+
+# =========================================================================== #

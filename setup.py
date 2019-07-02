@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import setuptools
-import os
+import sys
 from glob import glob
 from distutils.command.build_clib import build_clib
 from distutils.core import setup
@@ -32,6 +32,7 @@ try:
             language_level=3,
         )
 except ImportError:
+    print("Warn: Cython not found, using cached C sources.", file=sys.stderr)
     def maybe_cythonize(_):
         pass
 

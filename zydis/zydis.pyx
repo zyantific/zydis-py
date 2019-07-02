@@ -58,29 +58,27 @@ cdef class StatusCode:
         self.status = status
 
     @property
-    def raw_code(self):
+    def raw_code(self) -> int:
         return int(self.status)
 
     @property
-    def success(self):
-        return is_success(self.status)
+    def success(self) -> bool:
+        return bool(is_success(self.status))
 
     @property
-    def module(self):
-        return (self.status >> 20) & 0x7FF
+    def module(self) -> Module:
+        return Module((self.status >> 20) & 0x7FF)
 
     @property
-    def code(self):
+    def code(self) -> StatusCodeId:
         return StatusCodeId(self.status & 0xFFFFF)
 
     def __str__(self):
-        return (
-            f'success: {self.success}, module: {self.module}, '
-            f'code: {self.code}'
-        )
+        status = 'success' if self.success else 'failed'
+        return f'{status}, {self.module!s}, {self.code!s}'
 
     def __repr__(self):
-        return f'StatusCode({self.status})'
+        return f'StatusCode({self.status:016X})'
 
 
 cdef class ZydisError(Exception):
@@ -94,7 +92,7 @@ cdef class ZydisError(Exception):
         return self.code
 
     def __str__(self):
-        return f'Zydis error: {self.code!s}'
+        return str(self.code)
 
     def __repr__(self):
         return f'<ZydisError({self.code!r})>'
@@ -112,6 +110,13 @@ cdef inline int raise_if_err(ZyanStatus status) except -1:
 # Some enums must be ported manually (as opposed to the majority generated
 # from the C sources via `utils/genenums.py`) because they are defined as
 # `#define`s.
+
+
+class Module(IntEnum):
+    ZYCORE = ZYAN_MODULE_ZYCORE
+    ZYDIS = ZYAN_MODULE_ZYDIS
+    USER = ZYAN_MODULE_USER
+
 
 class StatusCodeId(IntEnum):
     # Zycore
@@ -216,6 +221,24 @@ cdef class Operand:
 
     def __repr__(self):
         return f'<{self.__class__.__name__} "{self!s}" at 0x{id(self):x}>'
+
+    cpdef ZyanU64 calc_absolute_address(self, ZyanU64 rt_addr):
+        """
+        Given the address of the instruction, calculate the absolute
+        address of an instruction operand.
+        
+        :param rt_addr: The address of the instruction.
+        :return: The absolute address of the operand. 
+        """
+        cdef ZydisDecodedOperand* op = self._get_op()
+        cdef ZyanU64 result_addr
+        raise_if_err(ZydisCalcAbsoluteAddress(
+            &self.instr.instr,
+            op,
+            rt_addr,
+            &result_addr,
+        ))
+        return result_addr
 
 
 cdef class RegOperand(Operand):
