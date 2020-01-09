@@ -15,7 +15,7 @@ if not os.path.exists('zydis-c/LICENSE'):
     print(
         "Err: Zydis C sources not found. Please make sure to clone this "
         "repo recursively. This can now be fixed by executing:\n"
-        "\tgit submodule update --init --remote",
+        "\tgit submodule update --init --remote --recursive",
         file=sys.stderr,
     )
 
