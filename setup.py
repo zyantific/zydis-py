@@ -2,12 +2,22 @@
 
 import setuptools
 import sys
+import os
+
 from glob import glob
 from distutils.command.build_clib import build_clib
 from distutils.core import setup
 from distutils.extension import Extension
 
 CYTHON_MODULES = glob('zydis/*.pyx')
+
+if not os.path.exists('zydis-c/LICENSE'):
+    print(
+        "Err: Zydis C sources not found. Please make sure to clone this "
+        "repo recursively. This can now be fixed by executing:\n"
+        "\tgit submodule update --init --remote",
+        file=sys.stderr,
+    )
 
 ZYDIS_INCLUDE_DIRS = [
     './zydis-c/include',
@@ -33,6 +43,14 @@ try:
         )
 except ImportError:
     print("Warn: Cython not found, using cached C sources.", file=sys.stderr)
+    if not os.path.exists("zydis/zydis.c"):
+        print(
+            "Err: No cached sources present. "
+            "Please install Cython (e.g. via pip).",
+            file=sys.stderr,
+        )
+        exit(1)
+
     def maybe_cythonize(_):
         pass
 
