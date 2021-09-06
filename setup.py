@@ -61,7 +61,7 @@ for module in CYTHON_MODULES:
 
 setup(
     name='zydis-py',
-    version='3.0.0a0',
+    version='3.1.0',
     packages=['zydis'],
     libraries=[ZYDIS_C],
     # install_requires=['Cython<=0.30'],

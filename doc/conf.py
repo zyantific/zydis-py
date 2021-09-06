@@ -20,13 +20,13 @@
 # -- Project information -----------------------------------------------------
 
 project = 'zydis'
-copyright = '2019, athre0z'
+copyright = '2021, athre0z'
 author = 'athre0z'
 
 # The short X.Y version
 version = ''
 # The full version, including alpha/beta/rc tags
-release = 'v3.0.0a'
+release = 'v3.1.0'
 
 
 # -- General configuration ---------------------------------------------------
