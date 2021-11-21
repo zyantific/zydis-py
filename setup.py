@@ -73,7 +73,7 @@ setup(
     cmdclass={'build_clib': build_clib},
     ext_modules=[
         Extension(
-            name=mod.split('.')[0].replace('/', '.'),
+            name=mod.split('.')[0].replace('/', '.').replace('\\', '.'),
             sources=[mod.split('.')[0] + '.c'],
             include_dirs=ZYDIS_INCLUDE_DIRS,
         )
