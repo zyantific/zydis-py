@@ -26,7 +26,7 @@ author = 'athre0z'
 # The short X.Y version
 version = ''
 # The full version, including alpha/beta/rc tags
-release = 'v3.1.0'
+release = 'v3.2.1'
 
 
 # -- General configuration ---------------------------------------------------

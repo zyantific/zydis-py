@@ -133,6 +133,8 @@ cdef extern from "Zydis/Zydis.h":
 
     ctypedef ZyanU8 ZydisOperandActions
     ctypedef ZyanU16 ZydisElementSize
+    ctypedef ZyanU32 ZydisCPUFlags
+    ctypedef ZyanU8 ZydisFPUFlags
 
     cdef struct ZydisDecodedOperandReg_:
         ZydisRegister value
@@ -252,7 +254,7 @@ cdef extern from "Zydis/Zydis.h":
         ZyanU8 X
         ZyanU8 B
         ZyanU8 R2
-        ZyanU8 mm
+        ZyanU8 mmm
         ZyanU8 W
         ZyanU8 vvvv
         ZyanU8 pp
@@ -331,9 +333,13 @@ cdef extern from "Zydis/Zydis.h":
         ZyanU8 operand_width
         ZyanU8 address_width
         ZyanU8 operand_count
-        ZydisDecodedOperand operands[13371337]
+        ZydisDecodedOperand operands[10]
         ZydisInstructionAttributes attributes
-        ZydisDecodedInstructionAccessedFlags_ accessed_flags[13371337]
+        ZydisDecodedInstructionAccessedFlags_ accessed_flags[26]
+        ZydisCPUFlags cpu_flags_read
+        ZydisCPUFlags cpu_flags_written
+        ZydisFPUFlags fpu_flags_read
+        ZydisFPUFlags fpu_flags_written
         ZydisDecodedInstructionAvx_ avx
         ZydisDecodedInstructionMeta_ meta
         ZydisDecodedInstructionRaw_ raw
