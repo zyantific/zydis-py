@@ -24,6 +24,10 @@ clean: .venv
 distclean: clean
 	rm -rf .venv
 	rm -rf ./build
+	rm -rf ./dist
 	rm -rf zydis_py.egg-info
 	rm zydis/zydis.c
 	rm zydis/zydis.cpython-*.so
+
+test: develop
+	$(PY) -munittest -v
