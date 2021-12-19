@@ -17,3 +17,13 @@ develop: .venv
 	$(PY) setup.py build_clib
 	$(PY) setup.py develop
 	@echo 'Done. Activate env by running `source .venv/bin/activate` now.'
+
+clean: .venv
+	$(PY) setup.py clean
+
+distclean: clean
+	rm -rf .venv
+	rm -rf ./build
+	rm -rf zydis_py.egg-info
+	rm zydis/zydis.c
+	rm zydis/zydis.cpython-*.so
