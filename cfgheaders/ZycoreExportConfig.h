@@ -22,7 +22,11 @@
 #endif
 
 #ifndef ZYCORE_DEPRECATED
-#  define ZYCORE_DEPRECATED __attribute__ ((__deprecated__))
+#  ifdef _MSC_VER
+#    define ZYCORE_DEPRECATED __declspec(deprecated)
+#  else
+#    define ZYCORE_DEPRECATED __attribute__ ((__deprecated__))
+#  endif
 #endif
 
 #ifndef ZYCORE_DEPRECATED_EXPORT

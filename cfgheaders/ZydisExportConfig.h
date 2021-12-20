@@ -22,7 +22,11 @@
 #endif
 
 #ifndef ZYDIS_DEPRECATED
-#  define ZYDIS_DEPRECATED __attribute__ ((__deprecated__))
+#  ifdef _MSC_VER
+#    define ZYDIS_DEPRECATED __declspec(deprecated)
+#  else
+#    define ZYDIS_DEPRECATED __attribute__ ((__deprecated__))
+#  endif
 #endif
 
 #ifndef ZYDIS_DEPRECATED_EXPORT
